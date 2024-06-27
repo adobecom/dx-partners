@@ -12,6 +12,41 @@
 
 import {prodHosts, setLibs} from './utils.js';
 
+function updateImsRedirectUrl() {
+  // Program will be extracted from url (solutionpartner, technologypartners etc.) and idea is for default to be eg. /solutionpartners/
+  // Just in case that metadata is not authored we redirect user to the programs home public page
+  let target = '/solutionpartners/drafts/ratko/public-page'
+  // Based on the user status, set redirection uri
+  // This url is where user will be redirected after he finishes with IMS flow (login or logout)
+  if (window.adobeIMS.isSignedInUser()) {
+    target = document.querySelector('meta[name="adobe-target-after-logout"]')?.content ?? target;
+  } else {
+    target = document.querySelector('meta[name="adobe-target-after-login"]')?.content;
+  }
+
+  window.adobeIMS.adobeIdData.redirect_uri = window.location.origin + target;
+}
+
+// If we move adobe-target-after-login from runtime
+// Redirect user if he is logged in, based on partner_data cookie and adobe-target-after-login metadata is authored
+(function afterLoginRedirect() {
+  const cookies = {};
+  // Find better solution if there is
+  document.cookie?.split(';').forEach((cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    cookies[name] = value;
+  });
+
+  if (cookies['partner_data']) {
+    // Check if user is member of the program based on partner_data cookie and pathname
+    const memberOfProgram = true;
+    const target = document.querySelector('meta[name="adobe-target-after-login"]')?.content;
+    if (target && target !== window.location.pathname && memberOfProgram) {
+      window.location.assign(window.location.origin + target);
+    }
+  }
+}());
+
 // Add project-wide style path here.
 const STYLES = '';
 
@@ -72,4 +107,12 @@ const miloLibs = setLibs(LIBS);
 
   setConfig({ ...CONFIG, miloLibs });
   await loadArea();
+
+  // Wait for the ims lib to be loaded
+  const loadIMS = setInterval(() => {
+    if (window.adobeIMS) {
+      clearInterval(loadIMS);
+      updateImsRedirectUrl();
+    }
+  }, 500);
 }());
