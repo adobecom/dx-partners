@@ -20,7 +20,6 @@ export default async function init(el) {
   const config = getConfig();
 
   const sectionIndex = el.parentNode.getAttribute('data-idx');
-
   let localizedText = {
     '{{apply}}': 'Apply',
     '{{back}}': 'Back',
