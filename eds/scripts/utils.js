@@ -64,3 +64,35 @@ export function populateLocalizedTextFromListItems(el, localizedText) {
     localizedText[`{{${liContent}}}`] = liContent;
   });
 }
+
+export function getProgramType(path) {
+  switch(true) {
+    case /solutionpartners/.test(path): return 'spp';
+    case /technologypartners/.test(path): return 'tpp';
+    case /channelpartners/.test(path): return 'cpp';
+    default: return '';
+  }
+}
+
+export function getCurrentProgramType() {
+  return getProgramType(window.location.pathname);
+}
+
+export function isNonMember() {
+  return getPartnerDataCookieValue(getCurrentProgramType(), 'status') !== 'member';
+}
+
+export function getCookieValue(key) {
+  const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+  const cookie = cookies.find(cookie => cookie.startsWith(`${key}=`));
+  return cookie?.substring((`${key}=`).length);
+}
+
+export function getPartnerDataCookieValue(programType, key) {
+  const partnerDataCookie = getCookieValue('partner_data');
+  if (!partnerDataCookie) return;
+  const partnerDataObj = JSON.parse(decodeURIComponent(partnerDataCookie.toLowerCase()));
+  const portalData = partnerDataObj?.[programType];
+  return portalData?.[key];
+}
+

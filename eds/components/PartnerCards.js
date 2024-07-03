@@ -1,4 +1,9 @@
-import {getLibs, prodHosts} from '../scripts/utils.js';
+import {
+  getLibs,
+  prodHosts,
+  getPartnerDataCookieValue,
+  getCurrentProgramType
+} from '../scripts/utils.js';
 import { partnerCardsStyles, newsCardStyles } from './PartnerCardsStyles.js';
 const miloLibs = getLibs();
 const { html, LitElement, css, repeat } = await import (`${miloLibs}/deps/lit-all.min.js`);
@@ -237,7 +242,7 @@ export class PartnerCards extends LitElement {
   }
 
   getComplexQueryParams() {
-    const portal = this.getProgramType(window.location.pathname);
+    const portal = getCurrentProgramType();
     let partnerLevelParams;
 
     if (portal) {
@@ -258,28 +263,12 @@ export class PartnerCards extends LitElement {
   getPartnerLevelParams(portal) {
     try {
       const publicTag = `(("caas:adobe-partners/${portal}/partner-level/public"))`;
-      const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-      const partnerDataCookie = cookies.find(cookie => cookie.startsWith('partner_data='));
-      if (!partnerDataCookie) return publicTag;
-
-      const cookieValue = JSON.parse(decodeURIComponent(partnerDataCookie.substring(('partner_data=').length).toLowerCase()));
-      if (cookieValue && cookieValue[portal]) {
-          const cookieLevel = cookieValue[portal].level;
-          if (cookieLevel) return `(("caas:adobe-partners/${portal}/partner-level/${cookieLevel}")+OR+("caas:adobe-partners/${portal}/partner-level/public"))`;
-      }
+      const partnerLevel = getPartnerDataCookieValue(portal, 'level');
+      if (partnerLevel) return `(("caas:adobe-partners/${portal}/partner-level/${partnerLevel}")+OR+("caas:adobe-partners/${portal}/partner-level/public"))`;
       return publicTag;
     } catch(error) {
       console.error('Error parsing partner data object:', error);
       return '';
-    }
-  }
-
-  getProgramType(path) {
-    switch(true) {
-      case /solutionpartners/.test(path): return 'spp';
-      case /technologypartners/.test(path): return 'tpp';
-      case /channelpartners/.test(path): return 'cpp';
-      default: return '';
     }
   }
 

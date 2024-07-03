@@ -10,7 +10,13 @@
  * governing permissions and limitations under the License.
  */
 
-import {prodHosts, setLibs} from './utils.js';
+import {
+  getCurrentProgramType,
+  getPartnerDataCookieValue,
+  prodHosts,
+  setLibs
+} from './utils.js';
+import {applyPersonalization} from "./personalization.js";
 
 // Add project-wide style path here.
 const STYLES = '';
@@ -34,6 +40,10 @@ const CONFIG = {
     de: { ietf: 'de-DE', tk: 'hah7vzn.css' },
     kr: { ietf: 'ko-KR', tk: 'zfo3ouc' },
   },
+};
+
+const PLACEHOLDERS_TO_REPLACE = {
+  'firstName': getPartnerDataCookieValue(getCurrentProgramType(), 'firstname'),
 };
 
 (function removeAccessToken() {
@@ -69,6 +79,7 @@ const miloLibs = setLibs(LIBS);
 
 (async function loadPage() {
   const { loadArea, setConfig } = await import(`${miloLibs}/utils/utils.js`);
+  applyPersonalization(PLACEHOLDERS_TO_REPLACE);
 
   setConfig({ ...CONFIG, miloLibs });
   await loadArea();
