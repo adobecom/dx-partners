@@ -16,6 +16,7 @@ describe('partner-news block', () => {
       this.cards = cards;
       this.paginatedCards = this.cards.slice(0, 3);
       this.hasResponseData = true;
+      this.fetchedData = true;
     });
 
     await import('../../../eds/scripts/scripts.js');
@@ -40,7 +41,7 @@ describe('partner-news block', () => {
     expect(partnerNewsWrapper.shadowRoot).to.exist;
     const partnerCardsCollection = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-collection');
     expect(partnerCardsCollection).to.exist;
-    expect(partnerCardsCollection.innerHTML).to.include('news-card');
+    expect(partnerCardsCollection.innerHTML).to.include('single-partner-card');
     const firstCard = partnerCardsCollection.querySelector('.card-wrapper');
     expect(firstCard.shadowRoot).to.exist;
     const searchBarWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-sidebar .search-wrapper');

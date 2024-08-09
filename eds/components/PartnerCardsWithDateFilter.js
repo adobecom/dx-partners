@@ -1,5 +1,5 @@
 import { getLibs } from '../scripts/utils.js';
-import { dateFilterStyles } from './PartnerCardsStyles.js';
+import { partnerCardsDateFilterStyles } from './PartnerCardsStyles.js';
 import PartnerCards from './PartnerCards.js';
 
 const miloLibs = getLibs();
@@ -8,7 +8,7 @@ const { html, css, repeat } = await import(`${miloLibs}/deps/lit-all.min.js`);
 export default class PartnerCardsWithDateFilter extends PartnerCards {
   static styles = [
     PartnerCards.styles,
-    css`${dateFilterStyles}`,
+    css`${partnerCardsDateFilterStyles}`,
   ];
 
   static properties = {
@@ -59,6 +59,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
   get dateFilterMobile() {
     const { dateFilter: filter } = this.blockData;
 
+    /* eslint-disable indent */
     return html`
       <div class="filter-wrapper-mobile">
         <div class="filter-mobile">
@@ -96,6 +97,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
         </div>
       </div>
     `;
+    /* eslint-enable indent */
   }
 
   get filtersMobile() {
@@ -122,6 +124,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
       tagsCount += 1;
     }
 
+    // eslint-disable-next-line consistent-return
     return { htmlContent, tagsCount };
   }
 
@@ -130,6 +133,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
 
     const { tags } = filter;
 
+    // eslint-disable-next-line consistent-return
     return html`${repeat(
       tags,
       (tag) => tag.key,
@@ -155,6 +159,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
       this.initDateTags(tags);
     } else {
       this.selectedDateFilter = tag;
+      // eslint-disable-next-line no-return-assign
       tags.forEach((filterTag) => filterTag.checked = filterTag.key === tag.key);
     }
 
