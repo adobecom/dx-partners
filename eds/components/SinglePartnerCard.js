@@ -17,6 +17,7 @@ class SinglePartnerCard extends LitElement {
   static styles = singlePartnerCardStyles;
 
   get imageUrl() {
+    // comment
     const isKB = this.data?.tags.some((tag) => tag.id === KB_TAG);
     return isKB ? this.data.styles?.backgroundImage : `${new URL(this.data.styles?.backgroundImage).pathname}?width=400&format=webp&optimize=small`;
   }
