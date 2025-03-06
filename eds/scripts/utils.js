@@ -36,8 +36,6 @@ export const [setLibs, getLibs] = (() => {
 })();
 
 export const prodHosts = [
-  'main--dx-partners--adobecom.hlx.page',
-  'main--dx-partners--adobecom.hlx.live',
   'main--dx-partners--adobecom.aem.page',
   'main--dx-partners--adobecom.aem.live',
   'partners.adobe.com',
