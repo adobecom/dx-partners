@@ -112,6 +112,7 @@ export function getProgramType(path) {
     case /solutionpartners/.test(path): return 'spp';
     case /technologypartners/.test(path): return 'tpp';
     case /channelpartners/.test(path): return 'cpp';
+    case /channelpartnerassets/.test(path): return 'cpp';
     default: return '';
   }
 }
@@ -123,6 +124,8 @@ export function getProgramHomePage(path) {
     case /technologypartners/.test(path):
       return '/technologypartners/';
     case /channelpartners/.test(path):
+      return '/channelpartners/';
+    case /channelpartnerassets/.test(path):
       return '/channelpartners/';
     default:
       return '';
