@@ -42,7 +42,7 @@ import {
 // MWPW-157751
 import { getLibs } from '../../scripts/utils.js';// MWPW-157751
 import { rewriteLinks } from '../../scripts/rewriteLinks.js';
-
+import { PERSONALIZATION_MARKER } from '../../scripts/personalizationConfigDX.js';
 
 const miloLibs = getLibs();
 const {
@@ -123,9 +123,9 @@ export const CONFIG = {
               enableProfileSwitcher: true,
               miniAppContext: {
                 logger: {
-                  trace: () => {},
-                  debug: () => {},
-                  info: () => {},
+                  trace: () => { },
+                  debug: () => { },
+                  info: () => { },
                   warn: (e) => lanaLog({ message: 'Profile Menu warning', e, tags: 'universalnav', errorType: 'warn' }),
                   error: (e) => lanaLog({ message: 'Profile Menu error', e, tags: 'universalnav', errorType: 'error' }),
                 },
@@ -338,7 +338,21 @@ class Gnav {
     this.content = content;
     this.block = block;
     this.customLinks = getConfig()?.customLinks?.split(',') || [];
-
+    // MWPW-168681 START
+    const shortcutIcons = [];
+    const MAX_GNAV_ICONS_COUNT = 8;
+    Array.from(this.content.querySelectorAll('.shortcut-icons > div')).slice(0, MAX_GNAV_ICONS_COUNT).forEach((icon) => {
+      if (icon.querySelectorAll('div').length !== 2) {
+        return;
+      }
+      const iconKey = icon.querySelectorAll('div')[0]?.textContent;
+      if (iconKey.includes(PERSONALIZATION_MARKER)) return;
+      shortcutIcons.push({
+        iconKey,
+        iconLink: icon.querySelectorAll('div')[1]?.querySelector('a')?.getAttribute('href'),
+      });
+    });
+    // MWPW-168681 END
     this.blocks = {
       profile: {
         rawElem: this.content.querySelector('.profile'),
@@ -346,6 +360,7 @@ class Gnav {
       },
       search: { config: { icon: CONFIG.icons.search } },
       breadcrumbs: { wrapper: '' },
+      shorcutIcons: shortcutIcons, // MWPW-168681
     };
 
     this.setupUniversalNav();
@@ -369,6 +384,20 @@ class Gnav {
       }, true);
     }
   };
+
+  // MWPW-168681 START
+  decorateShorcutIcons = () => {
+    const origin = window.location.origin.includes('adobecom')
+      ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
+    const html = this.blocks.shorcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
+    <a href="${obj.iconLink}" class="shortcut-icons-link">
+      <img src="${origin}/eds/partners-shared/mnemonics/${obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
+    </a>
+  `).join('');
+
+    return toFragment`<div class="shortcut-icons">${html}</div>`;
+  };
+  // MWPW-168681 END
 
   init = () => logErrorFor(async () => {
     branchBannerLoadCheck(this.updatePopupPosition);
@@ -883,6 +912,12 @@ class Gnav {
   toggleMenuMobile = () => {
     const toggle = this.elements.mobileToggle;
     const isExpanded = this.isToggleExpanded();
+    // MWPW-168681 START
+    const stickyCtaBtn = document.querySelector('.sticky-cta');
+    if (this.block.shorcutIcons?.length > 0 && stickyCtaBtn) {
+      stickyCtaBtn.innerHTML = '';
+    }
+    // MWPW-168681 END
     if (!isExpanded && this.newMobileNav) {
       const sections = document.querySelectorAll('header.new-nav .feds-nav > section.feds-navItem > button.feds-navLink');
       animateInSequence(sections, 0.075);
@@ -1077,6 +1112,7 @@ class Gnav {
         ${breadcrumbs}
         ${isDesktop.matches ? '' : this.decorateSearch()}
         ${this.elements.mainNav}
+        ${this.decorateShorcutIcons()}
         ${isDesktop.matches ? this.decorateSearch() : ''}
       </div>
     `;
