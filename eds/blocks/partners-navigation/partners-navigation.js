@@ -914,7 +914,7 @@ class Gnav {
     const isExpanded = this.isToggleExpanded();
     // MWPW-168681 START
     if (this.blocks.shortcutIcons?.length > 0) {
-      document.querySelector('header').classList.add('with-shortcut-icons');
+      document.querySelector('header')?.classList.add('with-shortcut-icons');
     }
     // MWPW-168681 END
     if (!isExpanded && this.newMobileNav) {
