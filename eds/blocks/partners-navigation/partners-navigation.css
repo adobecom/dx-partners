@@ -89,7 +89,7 @@ header.global-navigation {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  flex: 9;
+  flex: 8.5;
 }
 
 /* Promo */
@@ -1474,7 +1474,10 @@ html:has(body.disable-ios-scroll) {
 @media (max-width: 899px) {
   .shortcut-icons {
     justify-content: space-around;
-    flex: 1;
+    flex: 1.5;
     z-index: 2;
   }
+   header.with-shortcut-icons .feds-nav>section.feds-navItem>.feds-popup .sticky-cta .feds-cta {
+   display: none;
+ }
 }
