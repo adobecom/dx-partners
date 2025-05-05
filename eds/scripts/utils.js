@@ -237,6 +237,24 @@ export function isAdminUser() {
   return !!isAdmin;
 }
 
+export function isPartnerNewlyRegistered() {
+  if (!isMember()) return false;
+  const programType = getCurrentProgramType();
+
+  const accountCreated = getPartnerDataCookieValue(programType, 'createddate');
+  if (!accountCreated) return;
+
+  const accountCreatedDate = new Date(accountCreated);
+  accountCreatedDate.setHours(0, 0, 0, 0);
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const differenceInMilliseconds = now - accountCreatedDate;
+  const differenceInDays = Math.abs(differenceInMilliseconds) / (1000 * 60 * 60 * 24);
+
+  return differenceInMilliseconds > 0 && differenceInDays < 31;
+}
+
 export function isRenew() {
   const programType = getCurrentProgramType();
 

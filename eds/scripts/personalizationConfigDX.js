@@ -1,8 +1,9 @@
-import { processPrimaryContact, processSalesAccess } from './personalizationUtils.js';
+import { processPrimaryContact, processSalesAccess, COOKIE_OBJECT } from './personalizationUtils.js';
 import {
   getPartnerDataCookieObject,
   hasSalesCenterAccess,
   isAdminUser,
+  isPartnerNewlyRegistered,
   isMember,
   partnerIsSignedIn,
   signedInNonMember,
@@ -32,6 +33,8 @@ export const PERSONALIZATION_CONDITIONS = {
   'partner-tpp-member': isTPPOnly(),
   'partner-spp-tpp-member': isSPPandTPP(),
   'partner-admin': isAdminUser(),
+  'partner-primary': COOKIE_OBJECT.primaryContact,
+  'partner-newly-registered': isPartnerNewlyRegistered(),
 };
 
 export const PROFILE_PERSONALIZATION_ACTIONS = {
