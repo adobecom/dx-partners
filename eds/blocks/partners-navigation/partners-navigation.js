@@ -360,7 +360,7 @@ class Gnav {
       },
       search: { config: { icon: CONFIG.icons.search } },
       breadcrumbs: { wrapper: '' },
-      shorcutIcons: shortcutIcons, // MWPW-168681
+      shortcutIcons: shortcutIcons, // MWPW-168681
     };
 
     this.setupUniversalNav();
@@ -386,10 +386,10 @@ class Gnav {
   };
 
   // MWPW-168681 START
-  decorateShorcutIcons = () => {
+  decorateShortcutIcons = () => {
     const origin = window.location.origin.includes('adobecom')
       ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
-    const html = this.blocks.shorcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
+    const html = this.blocks.shortcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
       <img src="${origin}/eds/partners-shared/mnemonics/${obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
     </a>
@@ -913,9 +913,8 @@ class Gnav {
     const toggle = this.elements.mobileToggle;
     const isExpanded = this.isToggleExpanded();
     // MWPW-168681 START
-    const stickyCtaBtn = document.querySelector('.sticky-cta');
-    if (this.block.shorcutIcons?.length > 0 && stickyCtaBtn) {
-      stickyCtaBtn.innerHTML = '';
+    if (this.blocks.shortcutIcons?.length > 0) {
+      document.querySelector('header')?.classList.add('with-shortcut-icons');
     }
     // MWPW-168681 END
     if (!isExpanded && this.newMobileNav) {
@@ -1112,7 +1111,7 @@ class Gnav {
         ${breadcrumbs}
         ${isDesktop.matches ? '' : this.decorateSearch()}
         ${this.elements.mainNav}
-        ${this.decorateShorcutIcons()}
+        ${this.decorateShortcutIcons()}
         ${isDesktop.matches ? this.decorateSearch() : ''}
       </div>
     `;
