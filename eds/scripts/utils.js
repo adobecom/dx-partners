@@ -245,9 +245,7 @@ export function isPartnerNewlyRegistered() {
   if (!accountCreated) return;
 
   const accountCreatedDate = new Date(accountCreated);
-  accountCreatedDate.setHours(0, 0, 0, 0);
   const now = new Date();
-  now.setHours(0, 0, 0, 0);
 
   const differenceInMilliseconds = now - accountCreatedDate;
   const differenceInDays = Math.abs(differenceInMilliseconds) / (1000 * 60 * 60 * 24);
