@@ -89,7 +89,6 @@ header.global-navigation {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  flex: 8.5;
 }
 
 /* Promo */
@@ -1457,14 +1456,21 @@ html:has(body.disable-ios-scroll) {
 
 /*MWPW-168681*/
 .shortcut-icons {
-  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
 }
+.shortcut-icons-desktop{
+  display: flex;
+}
+.shortcut-icons-mobile{
+  display: none;
+}
 
 .shortcut-icons-img {
   width: 25px;
+  max-height: 25px;
+  min-width: 15px;
 }
 .shortcut-icons-link {
   text-align: center;
@@ -1472,12 +1478,12 @@ html:has(body.disable-ios-scroll) {
 }
 
 @media (max-width: 899px) {
-  .shortcut-icons {
-    justify-content: space-around;
-    flex: 1.5;
-    z-index: 2;
+  .shortcut-icons-mobile{
+    display: flex;
+    padding: 20px 20px 10px;
+
   }
-   header.with-shortcut-icons .feds-nav>section.feds-navItem>.feds-popup .sticky-cta .feds-cta {
-   display: none;
- }
+  .shortcut-icons-desktop{
+    display: none;
+  }
 }

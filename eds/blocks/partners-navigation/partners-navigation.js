@@ -386,7 +386,7 @@ class Gnav {
   };
 
   // MWPW-168681 START
-  decorateShortcutIcons = () => {
+  decorateShortcutIcons = (isMobile) => {
     const origin = window.location.origin.includes('adobecom')
       ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
     const html = this.blocks.shortcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
@@ -395,7 +395,7 @@ class Gnav {
     </a>
   `).join('');
 
-    return toFragment`<div class="shortcut-icons">${html}</div>`;
+    return toFragment`<div class="shortcut-icons shortcut-icons-${isMobile? 'mobile' : 'desktop'}">${html}</div>`;
   };
   // MWPW-168681 END
 
@@ -1110,8 +1110,9 @@ class Gnav {
       <div class="feds-nav-wrapper" id="feds-nav-wrapper">
         ${breadcrumbs}
         ${isDesktop.matches ? '' : this.decorateSearch()}
+        ${this.decorateShortcutIcons(true)}
         ${this.elements.mainNav}
-        ${this.decorateShortcutIcons()}
+        ${this.decorateShortcutIcons(false)}
         ${isDesktop.matches ? this.decorateSearch() : ''}
       </div>
     `;
