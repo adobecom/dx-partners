@@ -30,12 +30,14 @@ const decorateProfileLink = (service, path = '') => {
 
   let serviceUrl;
   const { env } = getConfig();
+
   if (!env?.[service]) {
     serviceUrl = defaultServiceUrls[service];
   } else {
     serviceUrl = new URL(defaultServiceUrls[service]);
     serviceUrl.hostname = env[service];
   }
+
   return `${serviceUrl}${path}`;
 };
 
@@ -58,7 +60,7 @@ class ProfileDropdown {
     this.sections = sections;
     this.openOnInit = openOnInit;
     this.localMenu = rawElem.querySelector('h5')?.parentElement;
-    logErrorFor(this.init.bind(this), 'ProfileDropdown.init()', 'errorType=error,module=gnav-profile');
+    logErrorFor(this.init.bind(this), 'ProfileDropdown.init()', 'gnav-profile', 'error');
   }
 
   async init() {

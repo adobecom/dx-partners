@@ -15,7 +15,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Run Nala
-        uses: adobecom/dx-partners@${{ github.event.pull_request.head.ref }} # Change if doing dev work
+        uses: adobecom/dx-partners@nala # Change if doing dev work
         env:
           labels: ${{ '@anonymous' }}
           branch: ${{ github.event.pull_request.head.ref }}

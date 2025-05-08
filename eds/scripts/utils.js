@@ -237,6 +237,22 @@ export function isAdminUser() {
   return !!isAdmin;
 }
 
+export function isPartnerNewlyRegistered() {
+  if (!isMember()) return false;
+  const programType = getCurrentProgramType();
+
+  const accountCreated = getPartnerDataCookieValue(programType, 'createddate');
+  if (!accountCreated) return;
+
+  const accountCreatedDate = new Date(accountCreated);
+  const now = new Date();
+
+  const differenceInMilliseconds = now - accountCreatedDate;
+  const differenceInDays = Math.abs(differenceInMilliseconds) / (1000 * 60 * 60 * 24);
+
+  return differenceInMilliseconds > 0 && differenceInDays < 31;
+}
+
 export function isRenew() {
   const programType = getCurrentProgramType();
 
@@ -299,6 +315,9 @@ export const isSPPandTPP = () => isSPP && isTPP;
 
 export function getNodesByXPath(query, context = document) {
   const nodes = [];
+  if(!context){
+    return nodes;
+  }
   const xpathResult = document.evaluate(query, context, null, XPathResult.ANY_TYPE);
   let current = xpathResult?.iterateNext();
   while (current) {

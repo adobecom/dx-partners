@@ -182,7 +182,7 @@ export default {
       tcid: '12',
       name: '@login-news-page-non-member-of-spp-user',
       path: '/solutionpartners/drafts/automation/regression/partner-news',
-      tags: '@dx-news @regression',
+      tags: '@dx-news @regression @anonymous',
       baseURL: 'https://www.stage.adobe.com/partners.html',
       data: {
         partnerLevel: 'Platinum',

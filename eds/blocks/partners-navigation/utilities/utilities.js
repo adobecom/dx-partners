@@ -9,6 +9,7 @@ const {
   getMetadata,
   loadStyle,
   loadLana,
+  isLocalNav,
   decorateLinks,
   localizeLink,
   getFederatedContentRoot,
@@ -25,6 +26,9 @@ const { PERSONALIZATION_TAGS } = await import(`${miloLibs}/features/personalizat
 loadLana();
 
 const FEDERAL_PATH_KEY = 'federal';
+// Set a default height for LocalNav,
+// as sticky blocks position themselves before LocalNav loads into the DOM.
+const DEFAULT_LOCALNAV_HEIGHT = 40;
 
 const selectorMap = {
   headline: '.feds-menu-headline[aria-expanded="true"]',
@@ -50,37 +54,38 @@ export const selectors = {
 };
 
 export const icons = {
-  brand: '<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 64.57 35"><defs><style>.cls-1{fill: #eb1000;}</style></defs><path class="cls-1" d="M6.27,10.22h4.39l6.2,14.94h-4.64l-3.92-9.92-2.59,6.51h3.08l1.23,3.41H0l6.27-14.94ZM22.03,13.32c.45,0,.94.04,1.43.16v-3.7h3.88v14.72c-.89.4-2.81.89-4.73.89-3.48,0-6.47-1.98-6.47-5.93s2.88-6.13,5.89-6.13ZM22.52,22.19c.36,0,.65-.07.94-.16v-5.42c-.29-.11-.58-.16-.96-.16-1.27,0-2.45.94-2.45,2.92s1.2,2.81,2.47,2.81ZM34.25,13.32c3.23,0,5.98,2.18,5.98,6.02s-2.74,6.02-5.98,6.02-6-2.18-6-6.02,2.72-6.02,6-6.02ZM34.25,22.13c1.11,0,2.14-.89,2.14-2.79s-1.03-2.79-2.14-2.79-2.12.89-2.12,2.79.96,2.79,2.12,2.79ZM41.16,9.78h3.9v3.7c.47-.09.96-.16,1.45-.16,3.03,0,5.84,1.98,5.84,5.86,0,4.1-2.99,6.18-6.53,6.18-1.52,0-3.46-.31-4.66-.87v-14.72ZM45.91,22.17c1.34,0,2.56-.96,2.56-2.94,0-1.85-1.2-2.72-2.5-2.72-.36,0-.65.04-.91.16v5.35c.22.09.51.16.85.16ZM58.97,13.32c2.92,0,5.6,1.87,5.6,5.64,0,.51-.02,1-.09,1.49h-7.27c.4,1.32,1.56,1.94,3.01,1.94,1.18,0,2.27-.29,3.5-.82v2.97c-1.14.58-2.5.82-3.9.82-3.7,0-6.58-2.23-6.58-6.02s2.61-6.02,5.73-6.02ZM60.93,18.02c-.2-1.27-1.05-1.78-1.92-1.78s-1.58.54-1.87,1.78h3.79Z"/></svg>',
+  brand: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 64.57 35"><defs><style>.cls-1{fill: #eb1000;}</style></defs><path class="cls-1" d="M6.27,10.22h4.39l6.2,14.94h-4.64l-3.92-9.92-2.59,6.51h3.08l1.23,3.41H0l6.27-14.94ZM22.03,13.32c.45,0,.94.04,1.43.16v-3.7h3.88v14.72c-.89.4-2.81.89-4.73.89-3.48,0-6.47-1.98-6.47-5.93s2.88-6.13,5.89-6.13ZM22.52,22.19c.36,0,.65-.07.94-.16v-5.42c-.29-.11-.58-.16-.96-.16-1.27,0-2.45.94-2.45,2.92s1.2,2.81,2.47,2.81ZM34.25,13.32c3.23,0,5.98,2.18,5.98,6.02s-2.74,6.02-5.98,6.02-6-2.18-6-6.02,2.72-6.02,6-6.02ZM34.25,22.13c1.11,0,2.14-.89,2.14-2.79s-1.03-2.79-2.14-2.79-2.12.89-2.12,2.79.96,2.79,2.12,2.79ZM41.16,9.78h3.9v3.7c.47-.09.96-.16,1.45-.16,3.03,0,5.84,1.98,5.84,5.86,0,4.1-2.99,6.18-6.53,6.18-1.52,0-3.46-.31-4.66-.87v-14.72ZM45.91,22.17c1.34,0,2.56-.96,2.56-2.94,0-1.85-1.2-2.72-2.5-2.72-.36,0-.65.04-.91.16v5.35c.22.09.51.16.85.16ZM58.97,13.32c2.92,0,5.6,1.87,5.6,5.64,0,.51-.02,1-.09,1.49h-7.27c.4,1.32,1.56,1.94,3.01,1.94,1.18,0,2.27-.29,3.5-.82v2.97c-1.14.58-2.5.82-3.9.82-3.7,0-6.58-2.23-6.58-6.02s2.61-6.02,5.73-6.02ZM60.93,18.02c-.2-1.27-1.05-1.78-1.92-1.78s-1.58.54-1.87,1.78h3.79Z"/></svg>',
   // MWPW-166846 START
   company: '<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 501.71 444.05"><defs><style>.cls-1 { fill: #eb1000; stroke-width: 0px; }</style></defs><g id="Layer_1-2" data-name="Layer 1"><polygon class="cls-1" points="297.58 444.05 261.13 342.65 169.67 342.65 246.54 149.12 363.19 444.05 501.71 444.05 316.8 0 186.23 0 0 444.05 297.58 444.05 297.58 444.05"/></g></svg>', // MWPW-166846
   // company: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 133.5 118.1"><defs><style>.cls-1 {fill: #eb1000;}</style></defs><g><g><polygon class="cls-1" points="84.1 0 133.5 0 133.5 118.1 84.1 0"/><polygon class="cls-1" points="49.4 0 0 0 0 118.1 49.4 0"/><polygon class="cls-1" points="66.7 43.5 98.2 118.1 77.6 118.1 68.2 94.4 45.2 94.4 66.7 43.5"/></g></g></svg>',
   // MWPW-166846 END
-  search: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="M14 2A8 8 0 0 0 7.4 14.5L2.4 19.4a1.5 1.5 0 0 0 2.1 2.1L9.5 16.6A8 8 0 1 0 14 2Zm0 14.1A6.1 6.1 0 1 1 20.1 10 6.1 6.1 0 0 1 14 16.1Z"></path></svg>',
-  home: '<svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 0 18 18" width="25"><path fill="#6E6E6E" d="M17.666,10.125,9.375,1.834a.53151.53151,0,0,0-.75,0L.334,10.125a.53051.53051,0,0,0,0,.75l.979.9785A.5.5,0,0,0,1.6665,12H2v4.5a.5.5,0,0,0,.5.5h4a.5.5,0,0,0,.5-.5v-5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5v5a.5.5,0,0,0,.5.5h4a.5.5,0,0,0,.5-.5V12h.3335a.5.5,0,0,0,.3535-.1465l.979-.9785A.53051.53051,0,0,0,17.666,10.125Z"/></svg>',
+  search: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="M14 2A8 8 0 0 0 7.4 14.5L2.4 19.4a1.5 1.5 0 0 0 2.1 2.1L9.5 16.6A8 8 0 1 0 14 2Zm0 14.1A6.1 6.1 0 1 1 20.1 10 6.1 6.1 0 0 1 14 16.1Z"></path></svg>',
+  home: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 0 18 18" width="25"><path fill="#6E6E6E" d="M17.666,10.125,9.375,1.834a.53151.53151,0,0,0-.75,0L.334,10.125a.53051.53051,0,0,0,0,.75l.979.9785A.5.5,0,0,0,1.6665,12H2v4.5a.5.5,0,0,0,.5.5h4a.5.5,0,0,0,.5-.5v-5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5v5a.5.5,0,0,0,.5.5h4a.5.5,0,0,0,.5-.5V12h.3335a.5.5,0,0,0,.3535-.1465l.979-.9785A.53051.53051,0,0,0,17.666,10.125Z"/></svg>',
 };
 
 export const darkIcons = {
   ...icons,
   // MWPW-167290 START
   company: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 133.5 118.1"><defs><style>.cls-1 {fill: currentColor;}</style></defs><g><g><polygon class="cls-1" points="84.1 0 133.5 0 133.5 118.1 84.1 0"/><polygon class="cls-1" points="49.4 0 0 0 0 118.1 49.4 0"/><polygon class="cls-1" points="66.7 43.5 98.2 118.1 77.6 118.1 68.2 94.4 45.2 94.4 66.7 43.5"/></g></g></svg>',
-  brand: '<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 64.57 35"><defs><style>.cls-1{fill: #fff;}</style></defs><path class="cls-1" d="M6.27,10.22h4.39l6.2,14.94h-4.64l-3.92-9.92-2.59,6.51h3.08l1.23,3.41H0l6.27-14.94ZM22.03,13.32c.45,0,.94.04,1.43.16v-3.7h3.88v14.72c-.89.4-2.81.89-4.73.89-3.48,0-6.47-1.98-6.47-5.93s2.88-6.13,5.89-6.13h0ZM22.52,22.19c.36,0,.65-.07.94-.16v-5.42c-.29-.11-.58-.16-.96-.16-1.27,0-2.45.94-2.45,2.92s1.2,2.81,2.47,2.81h0ZM34.25,13.32c3.23,0,5.98,2.18,5.98,6.02s-2.74,6.02-5.98,6.02-6-2.18-6-6.02,2.72-6.02,6-6.02ZM34.25,22.13c1.11,0,2.14-.89,2.14-2.79s-1.03-2.79-2.14-2.79-2.12.89-2.12,2.79.96,2.79,2.12,2.79ZM41.16,9.78h3.9v3.7c.47-.09.96-.16,1.45-.16,3.03,0,5.84,1.98,5.84,5.86,0,4.1-2.99,6.18-6.53,6.18-1.52,0-3.46-.31-4.66-.87v-14.72h0ZM45.91,22.17c1.34,0,2.56-.96,2.56-2.94,0-1.85-1.2-2.72-2.5-2.72-.36,0-.65.04-.91.16v5.35c.22.09.51.16.85.16h0ZM58.97,13.32c2.92,0,5.6,1.87,5.6,5.64,0,.51-.02,1-.09,1.49h-7.27c.4,1.32,1.56,1.94,3.01,1.94,1.18,0,2.27-.29,3.5-.82v2.97c-1.14.58-2.5.82-3.9.82-3.7,0-6.58-2.23-6.58-6.02s2.61-6.02,5.73-6.02ZM60.93,18.02c-.2-1.27-1.05-1.78-1.92-1.78s-1.58.54-1.87,1.78c0,0,3.79,0,3.79,0Z"/></svg>',
+  brand: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 64.57 35"><defs><style>.cls-1{fill: #fff;}</style></defs><path class="cls-1" d="M6.27,10.22h4.39l6.2,14.94h-4.64l-3.92-9.92-2.59,6.51h3.08l1.23,3.41H0l6.27-14.94ZM22.03,13.32c.45,0,.94.04,1.43.16v-3.7h3.88v14.72c-.89.4-2.81.89-4.73.89-3.48,0-6.47-1.98-6.47-5.93s2.88-6.13,5.89-6.13h0ZM22.52,22.19c.36,0,.65-.07.94-.16v-5.42c-.29-.11-.58-.16-.96-.16-1.27,0-2.45.94-2.45,2.92s1.2,2.81,2.47,2.81h0ZM34.25,13.32c3.23,0,5.98,2.18,5.98,6.02s-2.74,6.02-5.98,6.02-6-2.18-6-6.02,2.72-6.02,6-6.02ZM34.25,22.13c1.11,0,2.14-.89,2.14-2.79s-1.03-2.79-2.14-2.79-2.12.89-2.12,2.79.96,2.79,2.12,2.79ZM41.16,9.78h3.9v3.7c.47-.09.96-.16,1.45-.16,3.03,0,5.84,1.98,5.84,5.86,0,4.1-2.99,6.18-6.53,6.18-1.52,0-3.46-.31-4.66-.87v-14.72h0ZM45.91,22.17c1.34,0,2.56-.96,2.56-2.94,0-1.85-1.2-2.72-2.5-2.72-.36,0-.65.04-.91.16v5.35c.22.09.51.16.85.16h0ZM58.97,13.32c2.92,0,5.6,1.87,5.6,5.64,0,.51-.02,1-.09,1.49h-7.27c.4,1.32,1.56,1.94,3.01,1.94,1.18,0,2.27-.29,3.5-.82v2.97c-1.14.58-2.5.82-3.9.82-3.7,0-6.58-2.23-6.58-6.02s2.61-6.02,5.73-6.02ZM60.93,18.02c-.2-1.27-1.05-1.78-1.92-1.78s-1.58.54-1.87,1.78c0,0,3.79,0,3.79,0Z"/></svg>',
   // MWPW-167290 START END
 };
 
-export const lanaLog = ({ message, e = '', tags = 'errorType=default' }) => {
+export const lanaLog = ({ message, e = '', tags = 'default', errorType }) => {
   const url = getMetadata('gnav-source');
   window.lana.log(`${message} | gnav-source: ${url} | href: ${window.location.href} | ${e.reason || e.error || e.message || e}`, {
     clientId: 'feds-milo',
     sampleRate: 1,
     tags,
+    errorType,
   });
 };
 
-export const logErrorFor = async (fn, message, tags) => {
+export const logErrorFor = async (fn, message, tags, errorType) => {
   try {
     await fn();
   } catch (e) {
-    lanaLog({ message, e, tags });
+    lanaLog({ message, e, tags, errorType });
   }
 };
 
@@ -171,7 +176,8 @@ export function loadStyles(url, override = false) {
       lanaLog({
         message: 'GNAV: Error in loadStyles',
         e: `error loading style: ${url}`,
-        tags: 'errorType=info,module=utilities',
+        tags: 'utilities',
+        errorType: 'info',
       });
     }
   });
@@ -326,15 +332,28 @@ export const [hasActiveLink, setActiveLink, isActiveLink, getActiveLink] = (() =
   ];
 })();
 
-export function closeAllDropdowns({ type } = {}) {
+export function closeAllDropdowns({
+  type,
+  animatedElement = undefined,
+  animationType = undefined,
+} = {}) {
   const selector = selectorMap[type] || `${selectors.globalNav} [aria-expanded = "true"], ${selectors.localNav} [aria-expanded = "true"]`;
 
-  const openElements = document.querySelectorAll(selector);
-  if (!openElements) return;
-  [...openElements].forEach((el) => {
-    if ('fedsPreventautoclose' in el.dataset || (type === 'localNavItem' && el.classList.contains('feds-localnav-title'))) return;
-    el.setAttribute('aria-expanded', 'false');
-  });
+  const closeAllOpenElements = () => {
+    const openElements = document.querySelectorAll(selector);
+    if (!openElements) return;
+    [...openElements].forEach((el) => {
+      if ('fedsPreventautoclose' in el.dataset || (type === 'localNavItem' && el.classList.contains('feds-localnav-title'))) return;
+      el.setAttribute('aria-expanded', 'false');
+    });
+  };
+
+  if (animatedElement && animationType) {
+    animatedElement.addEventListener(`${animationType}end`, closeAllOpenElements, { once: true });
+    animatedElement.setAttribute('aria-expanded', 'false');
+  } else {
+    closeAllOpenElements();
+  }
 
   setActiveDropdown(undefined, type);
 
@@ -368,10 +387,16 @@ export const enableMobileScroll = () => {
   window.scroll(0, y || 0, { behavior: 'instant' });
 };
 
-export function trigger({ element, event, type } = {}) {
+export function trigger({
+  element,
+  event,
+  type,
+  animatedElement = undefined,
+  animationType = undefined,
+} = {}) {
   if (event) event.preventDefault();
   const isOpen = element?.getAttribute('aria-expanded') === 'true';
-  closeAllDropdowns({ type });
+  closeAllDropdowns({ type, animatedElement, animationType });
   if (isOpen) return false;
 
   // MWPW-157752
@@ -399,7 +424,8 @@ export async function fetchAndProcessPlainHtml({ url, shouldDecorateLinks = true
     lanaLog({
       message: 'Error in fetchAndProcessPlainHtml',
       e: `${res.statusText} url: ${res.url}`,
-      tags: 'errorType=info,module=utilities',
+      tags: 'utilities',
+      errorType: 'info',
     });
     return null;
   }
@@ -437,7 +463,8 @@ export async function fetchAndProcessPlainHtml({ url, shouldDecorateLinks = true
         lanaLog({
           message: 'Error in fetchAndProcessPlainHtml',
           e,
-          tags: 'errorType=info,module=utilities',
+          tags: 'utilities',
+          errorType: 'info',
         });
       });
   }
@@ -490,10 +517,10 @@ export const transformTemplateToMobile = async (popup, item, localnav = false) =
       const daallTab = headline?.getAttribute('daa-ll');
       const daalhTabContent = section.querySelector('.feds-menu-items')?.getAttribute('daa-lh');
       const content = section.querySelector('.feds-menu-items') ?? section;
-      const links = [...content.querySelectorAll('a.feds-navLink')].map((x) => x.outerHTML).join('');
+      const links = [...content.querySelectorAll('a.feds-navLink, .feds-cta--secondary')].map((x) => x.outerHTML).join('');
       return { name, links, daallTab, daalhTabContent };
     });
-  const CTA = popup.querySelector('.feds-cta')?.outerHTML ?? '';
+  const CTA = popup.querySelector('.feds-cta--primary')?.outerHTML ?? '';
   const mainMenu = `
       <button class="main-menu" daa-ll="Main menu_Gnav" aria-label='Main menu'>
         <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M5.55579 1L1.09618 5.45961C1.05728 5.4985 1.0571 5.56151 1.09577 5.60062L5.51027 10.0661" stroke=${isDarkMode() ? '#f2f2f2' : 'black'} stroke-width="2" stroke-linecap="round"/></svg>
@@ -586,3 +613,95 @@ export const dropWhile = (xs, f) => {
   if (f(xs[0])) return dropWhile(xs.slice(1), f);
   return xs;
 };
+
+export function getGnavHeight() {
+  let topHeight = document.querySelector('header')?.offsetHeight || 0;
+  if (isLocalNav() && !isDesktop.matches) {
+    const localNav = document.querySelector('.feds-localnav');
+    topHeight = localNav.offsetHeight || DEFAULT_LOCALNAV_HEIGHT;
+  }
+
+  const fedsPromo = document.querySelector('.feds-promo-aside-wrapper');
+  if (fedsPromo instanceof HTMLElement) {
+    topHeight += fedsPromo.offsetHeight;
+  }
+
+  return topHeight;
+}
+
+/**
+ * Initializes a MutationObserver to monitor the body
+  for the addition or removal of a branch banner iframe.
+ * When the branch banner is added or removed, updates the branch banner
+  information and adjusts the local navigation and popup position accordingly.
+ * A callback function to update the popup position when the branch banner is added or removed.
+ * @param {Function} updatePopupPosition
+ */
+export const [branchBannerLoadCheck, getBranchBannerInfo] = (() => {
+  const branchBannerInfo = {
+    isPresent: false,
+    isSticky: false,
+    height: 0,
+  };
+  return [
+    (updatePopupPosition) => {
+      // Create a MutationObserver instance to monitor the body for new child elements
+      const observer = new MutationObserver((mutationsList) => {
+        mutationsList.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach((node) => {
+              // Check if the added node has the ID 'branch-banner-iframe'
+              if (node.id === 'branch-banner-iframe') {
+                branchBannerInfo.isPresent = true;
+                // The element is added, now check its height and sticky status
+                // Check if the element has a sticky position
+                branchBannerInfo.isSticky = window.getComputedStyle(node).position === 'fixed';
+                branchBannerInfo.height = node.offsetHeight; // Get the height of the element
+                if (branchBannerInfo.isSticky) {
+                  // Adjust the top position of the lnav to account for the branch banner height
+                  const navElem = document.querySelector(isLocalNav() ? '.feds-localnav' : 'header');
+                  navElem.style.top = `${branchBannerInfo.height}px`;
+                } else {
+                  // Add a class to the body to indicate the presence of a non-sticky branch banner
+                  document.body.classList.add('branch-banner-inline');
+                }
+                // Update the popup position when the branch banner is added
+                updatePopupPosition();
+              }
+            });
+
+            mutation.removedNodes.forEach((node) => {
+              // Check if the removed node has the ID 'branch-banner-iframe'
+              if (node.id === 'branch-banner-iframe') {
+                branchBannerInfo.isPresent = false;
+                branchBannerInfo.isSticky = false;
+                branchBannerInfo.height = 0;
+                // Remove the top style attribute when the branch banner is removed
+                const navElem = document.querySelector(isLocalNav() ? '.feds-localnav' : 'header');
+                navElem?.removeAttribute('style');
+
+                // Remove the class indicating the presence of a non-sticky branch banner
+                document.body.classList.remove('branch-banner-inline');
+                // Update the popup position when the branch banner is removed
+                updatePopupPosition();
+                // Optional: Disconnect the observer if you no longer need to track it
+                observer.disconnect();
+              }
+            });
+          }
+        });
+      });
+
+      // Start observing the body element for added child nodes
+      observer.observe(document.body, {
+        childList: true, // Watch for added or removed child nodes
+        subtree: false, // Only observe direct children of <body>
+      });
+    },
+    /**
+     * Retrieves the current status of the branch banner.
+     * @returns {Object} An object containing the presence and sticky status of the branch banner.
+     */
+    () => branchBannerInfo,
+  ];
+})();

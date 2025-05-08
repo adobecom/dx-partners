@@ -366,13 +366,11 @@ test.describe('Validate news block', () => {
       await page.waitForSelector('.partner-cards-cards-results', { state: 'visible' });
     });
 
-    await test.step(`Open ${path} in a new tab`, async () => {
-      const newTab = await context.newPage();
-      await newTab.goto(`${path}`);
-      const newTabPage = new NewsPage(newTab);
-      await newTabPage.firstCardDate.waitFor({ state: 'visible', timeout: 20000 });
-      const resultCards = await newTabPage.resultNumber.textContent();
-      await expect(parseInt(resultCards.split(' ')[0], 10)).toBe(data.numberOfPublicCards);
+    await test.step(`Compare results`, async () => {
+      await expect(newsPage.resultCardNumber).toBeVisible();
+
+      const resultCards = await newsPage.resultCardNumber.textContent();
+      await expect(parseInt(resultCards)).toBe(data.numberOfPublicCards);
     });
   });
 });

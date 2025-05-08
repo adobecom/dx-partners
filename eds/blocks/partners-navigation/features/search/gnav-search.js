@@ -15,7 +15,6 @@ const miloLibs = getLibs();
 const { replaceKeyArray } = await import(`${miloLibs}/features/placeholders.js`);
 const { getConfig, getFedsPlaceholderConfig } = await import(`${miloLibs}/utils/utils.js`);
 const { debounce } = await import(`${miloLibs}/utils/action.js`);
-const { getFedsPlaceholderConfig } = await import (`${miloLibs}/utils/federated.js`);
 
 
 const CONFIG = {
@@ -27,6 +26,7 @@ const CONFIG = {
 const SUGGESTIONS_SIZE = 10;
 
 const { locale } = getConfig();
+const [, country = 'US'] = locale.ietf.split('-');
 
 class Search {
   constructor(config) {
@@ -49,8 +49,10 @@ class Search {
 
   async getLabels() {
     this.labels = {};
+    // MWPW-154138 start
     [this.labels.clearResults] = await replaceKeyArray(['clear-results'], getFedsPlaceholderConfig());
     [this.labels.search, this.labels.viewAllResults] = await replaceKeyArray(['search-topics-resources-files', 'view-all-results'], getConfig());
+    // MWPW-154138 end
   }
 
   decorate() {
@@ -102,7 +104,7 @@ class Search {
 
       if (e.code === 'Enter') {
         if (!this.input) return;
-        window.location.href = Search.getSearchLink(this.input.value?.trim());
+        window.location.href = Search.getSearchLink(this.input.value?.trim());  // MWPW-154138
       }
     });
 
@@ -125,7 +127,7 @@ class Search {
       closeAllDropdowns();
     });
   }
-
+  // MWPW-154138
   getSuggestions(query = this.query) {
    return generateRequestForSearchAPI(
         {
@@ -159,13 +161,13 @@ class Search {
       .then((data) => {
         const suggestions = data?.suggested_completions;
         this.resultsList.replaceChildren(this.getResultsTemplate(suggestions));
-        this.resultsList.appendChild(this.getViewAllResultsTemplate());
+        this.resultsList.appendChild(this.getViewAllResultsTemplate());  // MWPW-154138
         if (this.parent instanceof HTMLElement) {
           this.parent.classList.add(CONFIG.selectors.hasResults);
         }
       })
       .catch(() => {
-        this.resultsList.replaceChildren(this.getViewAllResultsTemplate());
+        this.resultsList.replaceChildren(this.getViewAllResultsTemplate());  // MWPW-154138
         if (this.parent instanceof HTMLElement) {
           this.parent.classList.remove(CONFIG.selectors.hasResults);
         }
@@ -251,7 +253,7 @@ class Search {
 
     return resultsTemplate;
   }
-
+  // MWPW-154138 start
   getViewAllResultsTemplate(query = this.query) {
     return toFragment`<li>
       <a href="${Search.getSearchLink(query)}" class="feds-search-view-all-results"><span>${this.labels.viewAllResults}</span></a>
@@ -275,7 +277,7 @@ class Search {
       this.clearSearchForm();
     }
   }
-
+  // MWPW-154138
   static getSearchLink(query) {
     const queryString = query ? `?term=${encodeURIComponent((query || '').trim())}` : '';
     return `${locale?.prefix}/channelpartners/home/search/${queryString}`;
