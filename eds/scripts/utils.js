@@ -119,7 +119,9 @@ export function getProgramType(path) {
 
 export function getProgramHomePage(path) {
   switch (true) {
-    case /solutionpartners/.test(path):
+    case /\/(solutionpartners|eds|directory|join|self-service-forms\/definition)\//.test(path):
+      return '/solutionpartners/';
+    case /^\/media[_/]/.test(path):
       return '/solutionpartners/';
     case /technologypartners/.test(path):
       return '/technologypartners/';
