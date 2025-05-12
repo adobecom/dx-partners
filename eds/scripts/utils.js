@@ -129,6 +129,8 @@ export function getProgramHomePage(path) {
       return '/channelpartners/';
     case /channelpartnerassets/.test(path):
       return '/channelpartners/';
+    case path === '/':
+      return '/solutionpartners/';
     default:
       return '';
   }
