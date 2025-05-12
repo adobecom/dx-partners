@@ -89,7 +89,7 @@ function setUpPage() {
   updateNavigation();
   updateFooter();
 }
-(async function loadPage() {
+async function loadPage() {
   applyPagePersonalization();
   setUpPage();
   redirectLoggedinPartner();
@@ -102,7 +102,8 @@ function setUpPage() {
   await loadArea();
   applyPagePersonalization();
   rewriteLinks(document);
-}());
+}
+loadPage();
 
 (async function loadDa() {
   if (!new URL(window.location.href).searchParams.get('dapreview')) return;
