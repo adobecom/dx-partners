@@ -37,7 +37,7 @@ describe('Test utils.js', () => {
     window = Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
-        pathname: '/solutionpartners',
+        pathname: '/solutionpartners/',
         // eslint-disable-next-line no-return-assign
         assign: (pathname) => window.location.pathname = pathname,
         origin: 'https://partners.stage.adobe.com',
