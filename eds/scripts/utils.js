@@ -109,7 +109,7 @@ function preloadLit(miloLibs) {
 
 export function getProgramType(path) {
   switch (true) {
-    case /solutionpartners/.test(path): return 'spp';
+    case /\/(solutionpartners|eds|directory|join|self-service-forms\/definition)\//.test(path) || /^\/(directory|join|)$/.test(path): return 'spp';
     case /technologypartners/.test(path): return 'tpp';
     case /channelpartners/.test(path): return 'cpp';
     case /channelpartnerassets/.test(path): return 'cpp';
@@ -118,14 +118,13 @@ export function getProgramType(path) {
 }
 
 export function getProgramHomePage(path) {
-  switch (true) {
-    case /solutionpartners/.test(path):
+  const programType = getProgramType(path);
+  switch (programType) {
+    case 'spp':
       return '/solutionpartners/';
-    case /technologypartners/.test(path):
+    case 'tpp':
       return '/technologypartners/';
-    case /channelpartners/.test(path):
-      return '/channelpartners/';
-    case /channelpartnerassets/.test(path):
+    case 'cpp':
       return '/channelpartners/';
     default:
       return '';
