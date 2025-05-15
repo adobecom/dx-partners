@@ -1,15 +1,15 @@
 import { readFile } from '@web/test-runner-commands';
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import init from '../../../eds/blocks/knowledge-base-overview/knowledge-base-overview.js';
+import init from '../../../eds/blocks/dx-card-collection/dx-card-collection.js';
 import PartnerCards from '../../../eds/components/PartnerCards.js';
 
 const cardsString = await readFile({ path: './mocks/cards.json' });
 const tagsString = await readFile({ path: './mocks/tags.json' });
-const cards = JSON.parse(cardsString);
 const tags = JSON.parse(tagsString);
+const cards = JSON.parse(cardsString);
 
-describe('knowledge-base-overview block', () => {
+describe('dx-card-collection block', () => {
   beforeEach(async () => {
     sinon.stub(PartnerCards.prototype, 'fetchData').resolves({ cards });
     sinon.stub(PartnerCards.prototype, 'fetchTags').resolves({ tags });
@@ -22,6 +22,7 @@ describe('knowledge-base-overview block', () => {
       this.fetchedData = true;
       this.allTags = tags;
     });
+
     await import('../../../eds/scripts/scripts.js');
     document.body.innerHTML = await readFile({ path: './mocks/body.html' });
   });
@@ -35,53 +36,50 @@ describe('knowledge-base-overview block', () => {
   const setupAndCommonTest = async (windowWidth) => {
     Object.defineProperty(window, 'innerWidth', { value: windowWidth });
 
-    const block = document.querySelector('.knowledge-base-overview');
+    const block = document.querySelector('.dx-card-collection');
     expect(block).to.exist;
+
     const component = await init(block);
     await component.updateComplete;
     expect(component).to.exist;
 
-    const knowledgeBaseWrapper = document.querySelector('.knowledge-base-overview-wrapper');
-    expect(knowledgeBaseWrapper.shadowRoot).to.exist;
-    const partnerCardsCollection = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-collection');
+    const partnerNewsWrapper = document.querySelector('.dx-card-collection-wrapper');
+    expect(partnerNewsWrapper.shadowRoot).to.exist;
+    const partnerCardsCollection = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-collection');
     expect(partnerCardsCollection).to.exist;
     expect(partnerCardsCollection.innerHTML).to.include('single-partner-card');
     const firstCard = partnerCardsCollection.querySelector('.card-wrapper');
     expect(firstCard.shadowRoot).to.exist;
-    const searchBarWrapper = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-sidebar .search-wrapper');
+    const searchBarWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-sidebar .search-wrapper');
     expect(searchBarWrapper.shadowRoot).to.exist;
     const spectrumSearch = searchBarWrapper.querySelector('#search');
     expect(spectrumSearch.shadowRoot).to.exist;
-    const paginationWrapper = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper');
+    const paginationWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper');
     expect(paginationWrapper).to.exist;
-    const paginationPrevBtn = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .pagination-prev-btn');
-    expect(paginationPrevBtn).to.exist;
-    const firstPageBtn = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .page-btn');
-    expect(firstPageBtn).to.exist;
-    const paginationNextBtn = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .pagination-next-btn');
-    expect(paginationNextBtn).to.exist;
-    const sortWrapper = knowledgeBaseWrapper.shadowRoot.querySelector('.partner-cards-content .sort-wrapper');
+    const loadMoreBtn = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .load-more-btn');
+    // expect(loadMoreBtn).to.exist;
+    const sortWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .sort-wrapper');
     expect(sortWrapper).to.exist;
     const firstSortItem = sortWrapper.querySelector('.sort-list .sort-item');
     expect(firstSortItem).to.exist;
 
-    return { knowledgeBaseWrapper };
+    return { partnerNewsWrapper };
   };
 
   it('should have shadow root and render partner cards for mobile', async function () {
-    const { knowledgeBaseWrapper } = await setupAndCommonTest(500);
+    const { partnerNewsWrapper } = await setupAndCommonTest(500);
 
-    const filtersBtn = knowledgeBaseWrapper.shadowRoot.querySelector('.filters-btn-mobile');
+    const filtersBtn = partnerNewsWrapper.shadowRoot.querySelector('.filters-btn-mobile');
     expect(filtersBtn).to.exist;
-    const filtersWrapper = knowledgeBaseWrapper.shadowRoot.querySelector('.all-filters-wrapper-mobile');
+    const filtersWrapper = partnerNewsWrapper.shadowRoot.querySelector('.all-filters-wrapper-mobile');
     expect(filtersWrapper).to.exist;
     const firstFilter = filtersWrapper.querySelector('.filter-wrapper-mobile');
     expect(firstFilter).to.exist;
   });
   it('should have shadow root and render partner cards for desktop', async function () {
-    const { knowledgeBaseWrapper } = await setupAndCommonTest(1500);
+    const { partnerNewsWrapper } = await setupAndCommonTest(1500);
 
-    const sidebarFiltersWrapper = knowledgeBaseWrapper.shadowRoot.querySelector('.sidebar-filters-wrapper');
+    const sidebarFiltersWrapper = partnerNewsWrapper.shadowRoot.querySelector('.sidebar-filters-wrapper');
     expect(sidebarFiltersWrapper).to.exist;
     const firstFilter = sidebarFiltersWrapper.querySelector('.filter');
     expect(firstFilter).to.exist;

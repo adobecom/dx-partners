@@ -474,7 +474,7 @@ export default class PartnerCards extends LitElement {
   }
 
   get filtersMobile() {
-    if (!this.blockData.filters.length) return;
+    if (!this.blockData?.filters || !this.blockData.filters.length) return;
 
     // eslint-disable-next-line consistent-return
     return html`${repeat(

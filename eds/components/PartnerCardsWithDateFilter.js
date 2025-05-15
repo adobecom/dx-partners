@@ -102,7 +102,7 @@ export default class PartnerCardsWithDateFilter extends PartnerCards {
 
   get filtersMobile() {
     return html`
-      ${this.dateFilterMobile}
+      ${this.blockData.showDateFilter === 'false' || this.blockData.showDateFilter === '' ? null : this.dateFilterMobile}
       ${super.filtersMobile}
     `;
   }
