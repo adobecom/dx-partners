@@ -55,7 +55,7 @@ describe('dx-card-collection block', () => {
     const spectrumSearch = searchBarWrapper.querySelector('#search');
     expect(spectrumSearch.shadowRoot).to.exist;
     const paginationWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper');
-    expect(paginationWrapper).to.exist;
+    expect(paginationWrapper).to.not.exist;
     const loadMoreBtn = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .load-more-btn');
     expect(loadMoreBtn).to.not.exist;
     const sortWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .sort-wrapper');
