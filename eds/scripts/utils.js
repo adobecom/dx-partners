@@ -162,8 +162,10 @@ function extractTableCollectionTags(el) {
     const colsContent = cols.slice(1);
     if (rowTitle === 'collection-tags') {
       const [collectionTagsEl] = colsContent;
-      const collectionTags = Array.from(collectionTagsEl.querySelectorAll('li'), (li) => `"${li.textContent.trim().toLowerCase()}"`);
-      tableCollectionTags = [...tableCollectionTags, ...collectionTags];
+      const collectionTags = Array.from(collectionTagsEl.querySelectorAll('li'), (li) =>
+        li.textContent ? `"${li.textContent.trim().toLowerCase()}"` : ''
+      );
+      tableCollectionTags.push(collectionTags)
     }
   });
 
@@ -193,29 +195,31 @@ function checkForQaContent(el) {
   return false;
 }
 
-function getComplexQueryParams(el, collectionTag) {
+function getComplexQueryParams(el) {
   const portal = getCurrentProgramType();
   if (!portal) return;
 
   const portalCollectionTag = `"caas:adobe-partners/${portal}"`;
   const tableTags = extractTableCollectionTags(el);
-  const collectionTags = [collectionTag, portalCollectionTag, ...tableTags];
 
-  const partnerLevelParams = getPartnerLevelParams(portal);
+  const groupedTagExpressions = tableTags
+    .filter(group => group.length)
+    .map(group => `(${group.join('+AND+')})`);
 
-  if (!collectionTags.length) return;
+  if (!groupedTagExpressions.length) return;
 
-  const collectionTagsStr = collectionTags.filter((e) => e.length).join('+AND+');
-  let resulStr = `(${collectionTagsStr})`;
+  const fullQuery = `(${portalCollectionTag}+AND+(${groupedTagExpressions.join('+OR+')}))`;
 
   const qaContentTag = '"caas:adobe-partners/qa-content"';
+  let resultStr = fullQuery;
   if (!checkForQaContent(el)) {
-    resulStr += `+NOT+${qaContentTag}`;
+    resultStr += `+NOT+${qaContentTag}`;
   }
 
-  if (partnerLevelParams) resulStr += `+AND+${partnerLevelParams}`;
-  // eslint-disable-next-line consistent-return
-  return resulStr;
+  const partnerLevelParams = getPartnerLevelParams(portal);
+  if (partnerLevelParams) resultStr += `+AND+${partnerLevelParams}`;
+
+  return resultStr;
 }
 
 export function getPartnerDataCookieObject(programType) {
@@ -397,7 +401,7 @@ function setApiParams(api, block) {
 }
 
 export function getCaasUrl(block) {
-  const useStageCaasEndpoint = block.name === 'knowledge-base-overview';
+  const useStageCaasEndpoint = block.name === 'dx-card-collection';
   const domain = `${(useStageCaasEndpoint && !prodHosts.includes(window.location.host)) ? 'https://14257-chimera-stage.adobeioruntime.net/api/v1/web/chimera-0.0.1' : 'https://www.adobe.com/chimera-api'}`;
   const api = new URL(`${domain}/collection?originSelection=dx-partners&draft=false&flatFile=false&expanded=true`);
   return setApiParams(api, block);
