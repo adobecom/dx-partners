@@ -57,7 +57,7 @@ describe('dx-card-collection block', () => {
     const paginationWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper');
     expect(paginationWrapper).to.exist;
     const loadMoreBtn = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .pagination-wrapper .load-more-btn');
-    // expect(loadMoreBtn).to.exist;
+    expect(loadMoreBtn).to.not.exist;
     const sortWrapper = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-content .sort-wrapper');
     expect(sortWrapper).to.exist;
     const firstSortItem = sortWrapper.querySelector('.sort-list .sort-item');
