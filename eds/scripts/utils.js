@@ -162,8 +162,10 @@ function extractTableCollectionTags(el) {
     const colsContent = cols.slice(1);
     if (rowTitle === 'collection-tags') {
       const [collectionTagsEl] = colsContent;
-      const collectionTags = Array.from(collectionTagsEl.querySelectorAll('li'), (li) => `"${li.textContent.trim().toLowerCase()}"`);
-      tableCollectionTags = [...tableCollectionTags, ...collectionTags];
+      const collectionTags = Array.from(collectionTagsEl.querySelectorAll('li'), (li) =>
+        li.textContent ? `"${li.textContent.trim().toLowerCase()}"` : ''
+      );
+      tableCollectionTags.push(collectionTags)
     }
   });
 
@@ -193,29 +195,27 @@ function checkForQaContent(el) {
   return false;
 }
 
-function getComplexQueryParams(el, collectionTag) {
-  const portal = getCurrentProgramType();
-  if (!portal) return;
-
-  const portalCollectionTag = `"caas:adobe-partners/${portal}"`;
+function getComplexQueryParams(el) {
   const tableTags = extractTableCollectionTags(el);
-  const collectionTags = [collectionTag, portalCollectionTag, ...tableTags];
 
-  const partnerLevelParams = getPartnerLevelParams(portal);
+  const groupedTagExpressions = tableTags
+    .filter(group => group.length)
+    .map(group => `(${group.join('+AND+')})`);
 
-  if (!collectionTags.length) return;
+  if (!groupedTagExpressions.length) return;
 
-  const collectionTagsStr = collectionTags.filter((e) => e.length).join('+AND+');
-  let resulStr = `(${collectionTagsStr})`;
+  const fullQuery = `(${groupedTagExpressions.join('+OR+')})`;
 
   const qaContentTag = '"caas:adobe-partners/qa-content"';
+  let resultStr = fullQuery;
   if (!checkForQaContent(el)) {
-    resulStr += `+NOT+${qaContentTag}`;
+    resultStr += `+NOT+${qaContentTag}`;
   }
 
-  if (partnerLevelParams) resulStr += `+AND+${partnerLevelParams}`;
-  // eslint-disable-next-line consistent-return
-  return resulStr;
+  const partnerLevelParams = getPartnerLevelParams('spp');
+  if (partnerLevelParams) resultStr += `+AND+${partnerLevelParams}`;
+
+  return resultStr;
 }
 
 export function getPartnerDataCookieObject(programType) {
@@ -406,8 +406,9 @@ export function getCaasUrl(block) {
 export async function preloadResources(locales, miloLibs) {
   const locale = getLocale(locales);
   const cardBlocks = {
-    'partner-news': '"caas:adobe-partners/collections/news"',
-    'knowledge-base-overview': '"caas:adobe-partners/collections/knowledge-base"',
+    // 'partner-news': '"caas:adobe-partners/collections/news"',
+    // 'knowledge-base-overview': '"caas:adobe-partners/collections/knowledge-base"',
+    'dx-card-collection': '"caas:adobe-partners/collections/news"',
   };
   // since we are going to add search-full later
   // adding this code update now to prevent being forgotten since in search
