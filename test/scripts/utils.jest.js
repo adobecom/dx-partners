@@ -380,7 +380,7 @@ describe('Test utils.js', () => {
       ietf: locale.ietf,
     };
     const caasUrl = getCaasUrl(block);
-    expect(caasUrl).toEqual('https://www.adobe.com/chimera-api/collection?originSelection=dx-partners&draft=false&flatFile=false&expanded=true&complexQuery=%28%22caas%3Aadobe-partners%2Fspp%22%2BAND%2B%28%28%22caas%3Aadobe-partners%2Fqa-content%22%29%29%29%2BNOT%2B%22caas%3Aadobe-partners%2Fqa-content%22%2BAND%2B%28%22caas%3Aadobe-partners%2Fspp%2Fpartner-level%2Fplatinum%22%2BOR%2B%22caas%3Aadobe-partners%2Fspp%2Fpartner-level%2Fpublic%22%29&language=en&country=US');
+    expect(caasUrl).toEqual('https://www.adobe.com/chimera-api/collection?originSelection=dx-partners&draft=false&flatFile=false&expanded=true&complexQuery=%28%28%22caas%3Aadobe-partners%2Fqa-content%22%29%29%2BNOT%2B%22caas%3Aadobe-partners%2Fqa-content%22%2BAND%2B%28%22caas%3Aadobe-partners%2Fspp%2Fpartner-level%2Fplatinum%22%2BOR%2B%22caas%3Aadobe-partners%2Fspp%2Fpartner-level%2Fpublic%22%29&language=en&country=US');
   });
   it('Preload resources', async () => {
     const locales = {
