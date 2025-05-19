@@ -196,10 +196,6 @@ function checkForQaContent(el) {
 }
 
 function getComplexQueryParams(el) {
-  const portal = getCurrentProgramType();
-  if (!portal) return;
-
-  const portalCollectionTag = `"caas:adobe-partners/${portal}"`;
   const tableTags = extractTableCollectionTags(el);
 
   const groupedTagExpressions = tableTags
@@ -208,7 +204,7 @@ function getComplexQueryParams(el) {
 
   if (!groupedTagExpressions.length) return;
 
-  const fullQuery = `(${portalCollectionTag}+AND+(${groupedTagExpressions.join('+OR+')}))`;
+  const fullQuery = `(${groupedTagExpressions.join('+OR+')})`;
 
   const qaContentTag = '"caas:adobe-partners/qa-content"';
   let resultStr = fullQuery;
@@ -216,7 +212,7 @@ function getComplexQueryParams(el) {
     resultStr += `+NOT+${qaContentTag}`;
   }
 
-  const partnerLevelParams = getPartnerLevelParams(portal);
+  const partnerLevelParams = getPartnerLevelParams('spp');
   if (partnerLevelParams) resultStr += `+AND+${partnerLevelParams}`;
 
   return resultStr;
