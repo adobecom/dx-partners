@@ -956,6 +956,7 @@ export default class PartnerCards extends LitElement {
     return html`
       <div class="partner-cards-header">
         <div class="partner-cards-title-wrapper">
+          <h1>hi Gnan</h1>
           <h3 class="partner-cards-title">${this.blockData.title}</h3>
           <span
             class="partner-cards-cards-results"><strong>${this.cards?.length}</strong> ${this.blockData.localizedText['{{results}}']}</span>
