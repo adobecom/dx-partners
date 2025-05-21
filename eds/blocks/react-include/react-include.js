@@ -1,13 +1,20 @@
 import {prodHosts} from "../../scripts/utils.js";
 
-function createScript(url) {
+function createScript(url, defer) {
   let script = document.createElement('script');
   script.src =url;
-  script.async = true;
+  script.defer = defer;
   script.onload = function () {
     console.log('hello script');
   };
   return script;
+}
+
+function createStyle(url) {
+  let link = document.createElement('link')
+  link.href = url;
+  link.rel = "stylesheet";
+  return link;
 }
 
 export default async function init(el) {
@@ -16,7 +23,7 @@ export default async function init(el) {
   let root = document.createElement('div');
   root.id = 'root';
 
-  let link = document.createElement('link');
+  let link;
   let mainScript;
 
   const rows = Array.from(el.children);
@@ -25,29 +32,30 @@ export default async function init(el) {
     const rowTitle = cols[0].innerText.trim().toLowerCase().replace(/ /g, '-');
 
     if (rowTitle === "prod-script" && prodHosts.includes(window.location.host)) {
-      mainScript = createScript( cols[1]?.innerText.trim());
+      mainScript = createScript( cols[1]?.innerText.trim(), true);
     }
     if (rowTitle === "stage-script" && !prodHosts.includes(window.location.host)) {
-      mainScript = createScript(cols[1]?.innerText.trim());
+      mainScript = createScript(cols[1]?.innerText.trim(), true);
     }
     if (rowTitle === "prod-styles" && prodHosts.includes(window.location.host)) {
-      link.href = cols[1]?.innerText.trim();
+      link = createStyle(cols[1]?.innerText.trim());
     }
     if (rowTitle === "stage-styles" && !prodHosts.includes(window.location.host)) {
-      link.href = cols[1]?.innerText.trim();
+      link = createStyle(cols[1]?.innerText.trim());
     }
   });
   if(!mainScript){
     return;
   }
 
+  const flexhost =  prodHosts.includes(window.location.host)? 'https://partner-directory-ui-flex.adobe.io' : 'https://partner-directory-ui-flex-stage.adobe.io'
+  let configScript = createScript( flexhost+'/configuration.js');
+  let newRelicScript = createScript( flexhost+'/newrelic.js');
+  let typeKitLink = createStyle('https://use.typekit.net/shu5jul.css');
 
-  let configScript = createScript( 'https://partner-directory-ui-flex.adobe.io/configuration.js');
-  let newRelicScript = createScript( 'https://partner-directory-ui-flex.adobe.io/newrelic.js');
 
-
-  link.rel="stylesheet";
   document.body.append(root);
+  document.head.appendChild(typeKitLink);
   document.head.appendChild(link);
   document.head.appendChild(configScript);
   document.head.appendChild(newRelicScript);
