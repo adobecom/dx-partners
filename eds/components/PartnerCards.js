@@ -183,6 +183,13 @@ export default class PartnerCards extends LitElement {
         this.blockData.filterInfoBox.title = cols[0].innerText.trim();
         this.blockData.filterInfoBox.description = this.getTextWithStrong(cols[1]);
       },
+      'design': (cols) => {
+        const [cardDesign] = cols;
+        const cardDesignStr = cardDesign.innerText.trim();
+        if (cardDesignStr === 'half height card') {
+          this.blockData.cardDesign = cardDesignStr;
+        }
+      }
     };
 
     const rows = Array.from(this.blockData.tableData);
@@ -345,7 +352,7 @@ export default class PartnerCards extends LitElement {
       return html`${repeat(
         this.paginatedCards,
         (card) => card.id,
-        (card) => html`<single-partner-card class="card-wrapper" .data=${card} .ietf=${this.blockData.ietf}></single-partner-card>`,
+        (card) => html`<single-partner-card class="card-wrapper${this.blockData.cardDesign === 'half height card' ? ' card-wrapper--half-height' : ''}" .data=${card} .ietf=${this.blockData.ietf} .design=${this.blockData.cardDesign}></single-partner-card>`,
       )}`;
     }
 

@@ -12,6 +12,7 @@ class SinglePartnerCard extends LitElement {
   static properties = {
     data: { type: Object },
     ietf: { type: String },
+    design: { type: String },
   };
 
   static styles = singlePartnerCardStyles;
@@ -37,13 +38,22 @@ class SinglePartnerCard extends LitElement {
   }
 
   firstUpdated() {
-    this.checkBackgroundImage(this.shadowRoot.querySelector('.card-header'));
+    this.checkBackgroundImage(this.shadowRoot.querySelector(this.design === 'half height card' ? '.single-partner-card--half-height' : '.card-header'));
   }
-
+  
   render() {
+    if(this.design === 'half height card') {
+      return html`
+        <a class="single-partner-card--half-height" href="${transformCardUrl(this.data.contentArea?.url)}" style="background-image: url(${this.imageUrl})" alt="${this.data.styles?.backgroundAltText}">
+          <p class="card-title">${this.data.contentArea?.title !== 'card-metadata' ? this.data.contentArea?.title : ''}</p>
+        </a>
+      `;
+    }
+
     return html`
       <div class="single-partner-card">
-        <div class="card-header" style="background-image: url(${this.imageUrl})" alt="${this.data.styles?.backgroundAltText}"></div>
+        <div class="card-header" style="background-image: url(${this.imageUrl})" alt="${this.data.styles?.backgroundAltText}">
+        </div>
         <div class="card-content">
           <div class="card-text">
             <p class="card-title">${this.data.contentArea?.title !== 'card-metadata' ? this.data.contentArea?.title : ''}</p>
