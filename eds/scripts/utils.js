@@ -112,6 +112,7 @@ export function getProgramType(path) {
     case /\/(solutionpartners|eds|directory|join|self-service-forms\/definition)\//.test(path) || /^\/(directory|join|)$/.test(path): return 'spp';
     case /technologypartners/.test(path): return 'tpp';
     case /channelpartners/.test(path): return 'cpp';
+    case /digitalexperience/.test(path): return 'dx';
     case /channelpartnerassets/.test(path): return 'cpp';
     default: return '';
   }
@@ -124,6 +125,8 @@ export function getProgramHomePage(path) {
       return '/solutionpartners/';
     case 'tpp':
       return '/technologypartners/';
+    case 'dx':
+      return '/digitalexperience/';
     case 'cpp':
       return '/channelpartners/';
     default:
@@ -314,7 +317,7 @@ export const isSPPandTPP = () => isSPP && isTPP;
 
 export function getNodesByXPath(query, context = document) {
   const nodes = [];
-  if(!context){
+  if (!context) {
     return nodes;
   }
   const xpathResult = document.evaluate(query, context, null, XPathResult.ANY_TYPE);
@@ -484,11 +487,10 @@ export async function getRenewBanner(getConfig) {
 export function updateNavigation() {
   const gnavMeta = getMetadata('gnav-source');
   if (!gnavMeta) return;
-  // todo check do we need locales for spp (same for footer) and update if yes (check dme code)
   let { content } = gnavMeta;
-  if (isMember()) {
-    // todo update when we have default logged in gnav created (same for footer)
-    content = getMetadataContent('gnav-loggedin-source') ?? '/solutionpartners/spp-shared/gnav';
+  const programTypeStatus = getProgramTypeStatus();
+  if (programTypeStatus.isSPP || programTypeStatus.isTPP) {
+    content = getMetadataContent('gnav-loggedin-source') ?? '/eds/partners-shared/dx-loggedin-gnav';
   }
   gnavMeta.content = content;
 }
@@ -497,8 +499,9 @@ export function updateFooter() {
   const footerMeta = getMetadata('footer-source');
   if (!footerMeta) return;
   let { content } = footerMeta;
-  if (isMember()) {
-    content = getMetadataContent('footer-loggedin-source') ?? '/solutionpartners/spp-shared/footer';
+  const programTypeStatus = getProgramTypeStatus();
+  if (programTypeStatus.isSPP || programTypeStatus.isTPP) {
+    content = getMetadataContent('footer-loggedin-source') ?? '/eds/partners-shared/dx-loggedin-footer';
   }
   footerMeta.content = content;
 }
