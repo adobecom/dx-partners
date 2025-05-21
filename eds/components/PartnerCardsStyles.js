@@ -305,8 +305,7 @@ export const partnerCardsStyles = css`
     align-items: center;
   }
   
-  .partner-cards-header .partner-cards-title-wrapper .partner-cards-title, 
-  .single-partner-card-half-height-title {
+  .partner-cards-header .partner-cards-title-wrapper .partner-cards-title {
     color: #323232;
     font-size: 1.125rem;
     font-weight: 700;
@@ -509,8 +508,7 @@ export const partnerCardsStyles = css`
     gap: 32px;
   }
   
-  .partner-cards-collection .card-wrapper, 
-  .partner-cards-collection .card-wrapper--half-height {
+  .partner-cards-collection .card-wrapper {
     min-height: 380px;
     width: 378px;
     max-width: 100%;
@@ -1097,11 +1095,6 @@ export const singlePartnerCardStyles = css`
     background: transparent linear-gradient(180deg,rgba(0,0,0,.1) 10%,rgba(0,0,0,.8) 80%) 0 0 no-repeat;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;    
-  }
-
-  .single-partner-card--half-height-header {
-    min-height: 208px;
-    max-height: 208px;
   }
 
   .single-partner-card:hover .card-header:after {
