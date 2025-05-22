@@ -54,7 +54,7 @@ export default async function init(el) {
   let typeKitLink = createStyle('https://use.typekit.net/shu5jul.css');
 
 
-  document.body.append(root);
+  document.querySelector("main").append(root);
   document.head.appendChild(typeKitLink);
   document.head.appendChild(link);
   document.head.appendChild(configScript);
