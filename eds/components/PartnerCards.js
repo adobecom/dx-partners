@@ -459,7 +459,7 @@ export default class PartnerCards extends LitElement {
               ${this.blockData.filtersInfos[filter.key] ? html`<div class="filter-info">
                   <div class="info-icon" style="background-image: url('/eds/img/icons/info.svg')"></div>
                  <span class="filter-info-text"> ${this.blockData.filtersInfos[filter.key]}</span> </div>`
-    : ''}
+            : ''}
               <sp-theme theme="spectrum" color="light" scale="medium">
                 ${this.getTagsByFilter(filter)}
               </sp-theme>
@@ -474,7 +474,7 @@ export default class PartnerCards extends LitElement {
   }
 
   get filtersMobile() {
-    if (!this.blockData.filters.length) return;
+    if (!this.blockData?.filters?.length) return;
 
     // eslint-disable-next-line consistent-return
     return html`${repeat(
@@ -493,21 +493,21 @@ export default class PartnerCards extends LitElement {
                 <div class="filter-header-content-mobile">
                   <h3 class="filter-header-name-mobile">${filter.value}</h3>
                   ${tagsCount
-          ? html`
+            ? html`
                       <div class="filter-header-selected-tags-mobile">
                         <span class="filter-header-selected-tags-text-mobile">${tagsString}</span>
                         <span class="filter-header-selected-tags-count-mobile">+ ${tagsCount}</span>
                       </div>
                     `
-          : ''
-        }
+            : ''
+          }
                 </div>
                 <span class="filter-header-chevron-icon"></span>
               </button>
               ${this.blockData.filtersInfos[filter.key] ? html`<div class="filter-info">
                   <div class="info-icon" style="background-image: url('/eds/img/icons/info.svg')"></div>
                  <span class="filter-info-text"> ${this.blockData.filtersInfos[filter.key]}</span> </div>`
-          : ''}
+            : ''}
               <ul class="filter-tags-mobile">
                 <sp-theme theme="spectrum" color="light" scale="medium">
                   ${this.getTagsByFilter(filter)}
@@ -854,7 +854,7 @@ export default class PartnerCards extends LitElement {
   render() {
     return html`
       ${this.fetchedData
-      ? html`
+        ? html`
           <div class="partner-cards">
             <div class="partner-cards-sidebar-wrapper">
               <div class="partner-cards-sidebar">
@@ -866,7 +866,7 @@ export default class PartnerCards extends LitElement {
                 </sp-theme>
 
                 ${!this.mobileView
-        ? html`
+            ? html`
                     ${this.getSlider()}
                     <div class="sidebar-header">
                       <h3 class="sidebar-title">${this.blockData.localizedText['{{filter}}']}</h3>
@@ -886,18 +886,18 @@ export default class PartnerCards extends LitElement {
                       <div class="title">${this.blockData.filterInfoBox.title}</div>
                       ${this.renderInfoBoxDescription()}
                     </div>` : ''
-        }
+              }
                   `
-        : ''
-      }
+            : ''
+          }
               </div>
             </div>
             <div class="partner-cards-content">
             ${this.getPartnerCardsHeader()}
               <div class="partner-cards-collection">
                 ${this.hasResponseData
-        ? this.partnerCards
-        : html`
+            ? this.partnerCards
+            : html`
                     <div class="progress-circle-wrapper">
                       <sp-theme theme="spectrum" color="light" scale="medium">
                         <sp-progress-circle label="Cards loading" indeterminate="" size="l"
@@ -905,10 +905,10 @@ export default class PartnerCards extends LitElement {
                       </sp-theme>
                     </div>
                   `
-      }
+          }
               </div>
               ${this.shouldDisplayPagination()
-        ? html`
+            ? html`
                   <div
                     class="pagination-wrapper ${this.blockData?.pagination === 'load-more' ? 'pagination-wrapper-load-more' : 'pagination-wrapper-default'}">
                     ${this.pagination}
@@ -916,8 +916,8 @@ export default class PartnerCards extends LitElement {
                       class="pagination-total-results">${this.cardsCounter} ${this.blockData.localizedText['{{of}}']} ${this.cards.length} ${this.blockData.localizedText['{{results}}']}</span>
                   </div>
                 `
-        : ''
-      }
+            : ''
+          }
             </div>
           </div>` : ''}
       ${this.getFilterFullScreenView(this.mobileView && this.fetchData)}
@@ -925,7 +925,7 @@ export default class PartnerCards extends LitElement {
   }
 
   shouldDisplayPagination() {
-    return this.cards.length;
+    return this.cards.length && this.blockData?.pagination !== 'disable';
   }
 
   getFilterFullScreenView(condition) {
@@ -962,21 +962,21 @@ export default class PartnerCards extends LitElement {
         </div>
         <div class="partner-cards-sort-wrapper">
           ${this.mobileView
-      ? html`
+        ? html`
               <button class="filters-btn-mobile" @click="${this.openFiltersMobile}"
                       aria-label="${this.blockData.localizedText['{{filters}}']}">
                 <span class="filters-btn-mobile-icon"></span>
                 <span class="filters-btn-mobile-title">${this.blockData.localizedText['{{filters}}']}</span>
                 ${this.chosenFilters?.tagsCount
-        ? html`<span class="filters-btn-mobile-total">${this.chosenFilters.tagsCount}</span>`
-        : ''
-      }
+            ? html`<span class="filters-btn-mobile-total">${this.chosenFilters.tagsCount}</span>`
+            : ''
+          }
               </button>
             `
-      : ''
-    }
+        : ''
+      }
           ${this.blockData.sort.items.length
-      ? html`
+        ? html`
               <div class="sort-wrapper">
                 <button class="sort-btn" @click="${this.toggleSort}">
                   <span class="sort-btn-text">${this.selectedSortOrder.value}</span>
@@ -986,8 +986,8 @@ export default class PartnerCards extends LitElement {
                   ${this.sortItems}
                 </div>
               </div>`
-      : ''
-    }
+        : ''
+      }
         </div>
       </div>
     `;
