@@ -40,7 +40,6 @@ class SinglePartnerCard extends LitElement {
   }
 
   firstUpdated() {
-    console.info('this.design: ', this.design);
     this.checkBackgroundImage(this.shadowRoot.querySelector(`.${this.design}`));
   }
 
