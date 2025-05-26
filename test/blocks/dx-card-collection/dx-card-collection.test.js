@@ -85,25 +85,25 @@ describe('dx-card-collection block', () => {
     expect(firstFilter).to.exist;
   });
   it('should render partner cards with design property set to half height card', async function () {
-  PartnerCards.prototype.firstUpdated.restore();
+    PartnerCards.prototype.firstUpdated.restore();
 
-  sinon.stub(PartnerCards.prototype, 'firstUpdated').callsFake(async function () {
-    this.blockData.cardDesign = 'half height card';
-    this.allCards = cards;
-    this.cards = cards;
-    this.paginatedCards = this.cards.slice(0, 3);
-    this.hasResponseData = true;
-    this.fetchedData = true;
+    sinon.stub(PartnerCards.prototype, 'firstUpdated').callsFake(async function () {
+      this.blockData.cardDesign = 'single-partner-card--half-height';
+      this.allCards = cards;
+      this.cards = cards;
+      this.paginatedCards = this.cards.slice(0, 3);
+      this.hasResponseData = true;
+      this.fetchedData = true;
+    });
+
+    const { partnerNewsWrapper } = await setupAndCommonTest(1200);
+
+    expect(partnerNewsWrapper.shadowRoot).to.exist;
+    const partnerCardsCollection = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-collection');
+    expect(partnerCardsCollection).to.exist;
+    expect(partnerCardsCollection.innerHTML).to.include('single-partner-card');
+    const firstCard = partnerCardsCollection.querySelector('.card-wrapper.single-partner-card--half-height');
+    expect(firstCard.shadowRoot).to.exist;
   });
-
-  const { partnerNewsWrapper } = await setupAndCommonTest(1200);
-
-  expect(partnerNewsWrapper.shadowRoot).to.exist;
-  const partnerCardsCollection = partnerNewsWrapper.shadowRoot.querySelector('.partner-cards-collection');
-  expect(partnerCardsCollection).to.exist;
-  expect(partnerCardsCollection.innerHTML).to.include('single-partner-card');
-  const firstCard = partnerCardsCollection.querySelector('.card-wrapper.card-wrapper--half-height');
-  expect(firstCard.shadowRoot).to.exist;
-});
 
 });

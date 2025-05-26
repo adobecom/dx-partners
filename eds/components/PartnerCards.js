@@ -5,12 +5,17 @@ import {
   partnerCardsPaginationStyles,
 } from './PartnerCardsStyles.js';
 import './SinglePartnerCard.js';
+import './SinglePartnerCardHalfHeight.js';
 import { extractFilterData } from '../blocks/utils/caasUtils.js';
 
 const miloLibs = getLibs();
 const { html, LitElement, css, repeat } = await import(`${miloLibs}/deps/lit-all.min.js`);
 
 export default class PartnerCards extends LitElement {
+  static designMap = {
+    'half height card': 'single-partner-card--half-height'
+  };
+
   static caasUrl;
 
   static styles = [
@@ -186,9 +191,7 @@ export default class PartnerCards extends LitElement {
       'design': (cols) => {
         const [cardDesign] = cols;
         const cardDesignStr = cardDesign.innerText.trim();
-        if (cardDesignStr === 'half height card') {
-          this.blockData.cardDesign = cardDesignStr;
-        }
+        this.blockData.cardDesign = PartnerCards.designMap[cardDesignStr] || 'card-header';
       }
     };
 
@@ -348,18 +351,30 @@ export default class PartnerCards extends LitElement {
   }
 
   get partnerCards() {
-    if (this.paginatedCards.length) {
-      return html`${repeat(
-        this.paginatedCards,
-        (card) => card.id,
-        (card) => html`<single-partner-card class="card-wrapper${this.blockData.cardDesign === 'half height card' ? ' card-wrapper--half-height' : ''}" .data=${card} .ietf=${this.blockData.ietf} .design=${this.blockData.cardDesign}></single-partner-card>`,
-      )}`;
-    }
-
-    return html`<div class="no-results">
+    if (!this.paginatedCards.length) {
+      return html`<div class="no-results">
         <strong class="no-results-title">${this.blockData.localizedText['{{no-results-title}}']}</strong>
         <p class="no-results-description">${this.blockData.localizedText['{{no-results-description}}']}</p>
       </div>`;
+    }
+
+    if(this.blockData.cardDesign === PartnerCards.designMap['half height card']) {
+      return html`${repeat(
+        this.paginatedCards,
+        (card) => card.id,
+        (card) => html`<single-partner-card-half-height class="card-wrapper ${this.blockData.cardDesign}" .data=${card} .design=${this.blockData.cardDesign}></single-partner-card-half-height>`,
+      )}`;
+    }
+    else {
+      return html`${repeat(
+        this.paginatedCards,
+        (card) => card.id,
+        (card) => html`<single-partner-card class="card-wrapper" .data=${card} .ietf=${this.blockData.ietf} .design=${this.blockData.cardDesign}></single-partner-card>`,
+      )}`;
+    }
+    
+
+    
   }
 
   get sortItems() {

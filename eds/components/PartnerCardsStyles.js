@@ -515,7 +515,7 @@ export const partnerCardsStyles = css`
     position: relative;
   }
 
-  .partner-cards-collection .card-wrapper--half-height {
+  .partner-cards-collection .single-partner-card--half-height {
     min-height: 208px;
   }
   
