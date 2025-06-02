@@ -87,7 +87,7 @@ describe('Test personalization.js', () => {
       expect(notMemberBlock.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(false);
     });
   });
-  it('Show partner-all-levels block', () => {
+  it('Show partner-member block', () => {
     jest.isolateModules(() => {
       const cookieObject = {
         SPP: {
@@ -99,7 +99,7 @@ describe('Test personalization.js', () => {
       document.cookie = `partner_data=${JSON.stringify(cookieObject)}`;
       const { applyPagePersonalization } = importModules();
       applyPagePersonalization();
-      const allLevelsBlock = document.querySelector('.partner-all-levels');
+      const allLevelsBlock = document.querySelector('.partner-member');
       expect(allLevelsBlock.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(false);
     });
   });
