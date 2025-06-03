@@ -39,8 +39,10 @@ function shouldHide(conditions, conditionsConfig = PERSONALIZATION_CONDITIONS) {
 
   const matchesPartnerLevel = partnerLevelConditions.length === 0
     || partnerLevelConditions.some((condition) => {
-      const level = condition.split('-').pop();
-      return conditionsConfig[LEVEL_CONDITION]?.(level);
+      const conditionKeys = condition.split('-');
+      const level = conditionKeys.pop();
+      const program = conditionKeys.pop();
+      return conditionsConfig[LEVEL_CONDITION]?.(level, program);
     });
 
   const matchesOtherConditions = otherConditions.every((condition) => conditionsConfig[condition]);
