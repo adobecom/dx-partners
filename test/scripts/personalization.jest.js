@@ -115,7 +115,7 @@ describe('Test personalization.js', () => {
       document.cookie = `partner_data=${JSON.stringify(cookieObject)}`;
       const { applyPagePersonalization } = importModules();
       applyPagePersonalization();
-      const goldBlock = document.querySelector('.partner-level-gold');
+      const goldBlock = document.querySelector('.partner-level-spp-gold');
       expect(goldBlock.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(false);
     });
   });
@@ -131,8 +131,8 @@ describe('Test personalization.js', () => {
       document.cookie = `partner_data=${JSON.stringify(cookieObject)}`;
       const { applyPagePersonalization } = importModules();
       applyPagePersonalization();
-      const goldBlock = document.querySelector('.partner-level-gold');
-      const platinumBlock = document.querySelector('.partner-level-platinum');
+      const goldBlock = document.querySelector('.partner-level-spp-gold');
+      const platinumBlock = document.querySelector('.partner-level-spp-platinum');
       expect(platinumBlock.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(false);
       expect(goldBlock.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(true);
     });
@@ -165,7 +165,7 @@ describe('Test personalization.js', () => {
       document.cookie = `partner_data=${JSON.stringify(cookieObject)}`;
       const { applyPagePersonalization } = importModules();
       applyPagePersonalization();
-      const block = document.querySelector('.partner-level-silver.partner-level-gold');
+      const block = document.querySelector('.partner-level-spp-silver.partner-level-spp-gold');
       expect(block.classList.contains(PERSONALIZATION_HIDE_CLASS)).toBe(false);
     });
   });
