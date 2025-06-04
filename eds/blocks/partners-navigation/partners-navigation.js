@@ -360,7 +360,7 @@ class Gnav {
       },
       search: { config: { icon: CONFIG.icons.search } },
       breadcrumbs: { wrapper: '' },
-      shortcutIcons: shortcutIcons, // MWPW-168681
+      shortcutIcons, // MWPW-168681
     };
 
     this.setupUniversalNav();
@@ -389,13 +389,15 @@ class Gnav {
   decorateShortcutIcons = (isMobile) => {
     const origin = window.location.origin.includes('adobecom')
       ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
-    const html = this.blocks.shortcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
+    let html = this.blocks.shortcutIcons.filter((el) => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
       <img src="${origin}/eds/partners-shared/mnemonics/${obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
     </a>
   `).join('');
-
-    return toFragment`<div class="shortcut-icons shortcut-icons-${isMobile? 'mobile' : 'desktop'}">${html}</div>`;
+    if (!isMobile) {
+      html = `<div class="icons-wrapper"> ${html}</div>`;
+    }
+    return toFragment`<div class="shortcut-icons shortcut-icons-${isMobile ? 'mobile' : 'desktop'}">${html}</div>`;
   };
   // MWPW-168681 END
 
