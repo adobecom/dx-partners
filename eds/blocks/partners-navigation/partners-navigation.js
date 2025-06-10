@@ -388,7 +388,7 @@ class Gnav {
   // MWPW-168681 START
   decorateShortcutIcons = (isMobile) => {
     const origin = window.location.origin.includes('adobecom')
-      ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
+      ? 'https://main--da-dx-partners--adobecom.aem.page' : window.location.origin;
     const html = this.blocks.shortcutIcons.filter(el => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
       <img src="${origin}/eds/partners-shared/mnemonics/${obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
