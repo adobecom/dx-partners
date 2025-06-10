@@ -388,8 +388,9 @@ class Gnav {
 
   // MWPW-168681 START
   decorateShortcutIcons = (isMobile) => {
+    // TODO: check with Sonja why we need this
     const origin = window.location.origin.includes('adobecom')
-      ? 'https://main--dx-partners--adobecom.aem.page' : window.location.origin;
+      ? 'https://main--da-dx-partners--adobecom.aem.page' : window.location.origin;
     let html = this.blocks.shortcutIcons.filter((el) => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
       <img src="${origin}/eds/partners-shared/mnemonics/${isMobile && obj.mobileIconKey? obj.mobileIconKey : obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
@@ -915,11 +916,6 @@ class Gnav {
   toggleMenuMobile = () => {
     const toggle = this.elements.mobileToggle;
     const isExpanded = this.isToggleExpanded();
-    // MWPW-168681 START
-    // if (this.blocks.shortcutIcons?.length > 0) {
-    //   document.querySelector('header')?.classList.add('with-shortcut-icons');
-    // }
-    // MWPW-168681 END
     if (!isExpanded && this.newMobileNav) {
       const sections = document.querySelectorAll('header.new-nav .feds-nav > section.feds-navItem > button.feds-navLink');
       animateInSequence(sections, 0.075);
