@@ -17,7 +17,7 @@ export default {
       tcid: '2',
       name: '@login-no-redirection-public-news',
       testId: '@MWPW-140198 @MWPW-140201',
-      path: 'https://partners.stage.adobe.com/solutionpartners/drafts/automation/regression/partner-news',
+      path: 'https://partners.stage.adobe.com/digitalexperience/drafts/automation/regression/partner-news',
       tags: '@dx-signin @regression @circleCi',
       data: {
         partnerLevel: 'spp-gold:',
