@@ -5,7 +5,7 @@ export default {
       tcid: '1',
       name: '@login-redirect-to-protected-home',
       testId: '@MWPW-140197',
-      path: 'https://partners.stage.adobe.com/solutionpartners/drafts/automation/regression/public-page',
+      path: 'https://partners.stage.adobe.com/digitalexperience/drafts/automation/regression/public-page',
       tags: '@dx-signin @regression @circleCi',
       data: {
         partnerLevel: 'spp-platinum:',
