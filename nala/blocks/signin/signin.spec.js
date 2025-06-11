@@ -28,7 +28,7 @@ export default {
       tcid: '3',
       name: '@login-accessing-public-home-page-with-member-user-logged-in-to-adobe',
       testId: '@MWPW-140202',
-      path: 'https://partners.stage.adobe.com/solutionpartners/drafts/automation/regression/public-page',
+      path: 'https://partners.stage.adobe.com/digitalexperience/drafts/automation/regression/public-page',
       baseURL: 'https://www.stage.adobe.com/partners.html?akamaiLocale=us',
       tags: '@dx-signin @regression @circleCi',
       data: {
