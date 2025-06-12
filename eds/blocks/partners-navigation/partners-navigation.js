@@ -345,8 +345,14 @@ class Gnav {
       if (icon.querySelectorAll('div').length !== 2) {
         return;
       }
-      const iconKey = icon.querySelectorAll('div')[0]?.textContent?.split(',');
-      if (iconKey.includes(PERSONALIZATION_MARKER)) return;
+
+      const iconText = icon.querySelectorAll('div')[0]?.textContent?.trim(); // for example: 'search, bell (partner-personalization, partner-member)'
+      let iconKey = iconText.replace(/\s*\(.*\)/, '').trim(); // outside of parenthesis
+      const personalizationMarkersInParenthesis = iconText.match(/\(([^)]+)\)/); // inside parenthesis
+      const personalizationMarkers = personalizationMarkersInParenthesis ? personalizationMarkersInParenthesis[1] : ''; // for example: 'partner-personalization, partner-member'
+
+      iconKey = iconKey.split(',');
+      if(personalizationMarkers.includes(PERSONALIZATION_MARKER)) return;
       shortcutIcons.push({
         iconKey: iconKey[0]?.trim(),
         mobileIconKey: iconKey[1]?.trim(),
@@ -388,12 +394,9 @@ class Gnav {
 
   // MWPW-168681 START
   decorateShortcutIcons = (isMobile) => {
-    // TODO: check with Sonja why we need this
-    const origin = window.location.origin.includes('adobecom')
-      ? 'https://main--da-dx-partners--adobecom.aem.page' : window.location.origin;
     let html = this.blocks.shortcutIcons.filter((el) => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
-      <img src="${origin}/eds/partners-shared/mnemonics/${isMobile && obj.mobileIconKey? obj.mobileIconKey : obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
+      <img src="https://partners.adobe.com/eds/partners-shared/mnemonics/${isMobile && obj.mobileIconKey? obj.mobileIconKey : obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
     </a>
   `).join('');
     if (!isMobile) {
