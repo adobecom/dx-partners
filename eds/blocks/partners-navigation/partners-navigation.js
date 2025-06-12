@@ -396,7 +396,7 @@ class Gnav {
   decorateShortcutIcons = (isMobile) => {
     let html = this.blocks.shortcutIcons.filter((el) => el.iconLink && el.iconKey).map((obj) => `
     <a href="${obj.iconLink}" class="shortcut-icons-link">
-      <img src="https://partners.adobe.com/eds/partners-shared/mnemonics/${isMobile && obj.mobileIconKey? obj.mobileIconKey : obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
+      <img src="/eds/partners-shared/mnemonics/${isMobile && obj.mobileIconKey? obj.mobileIconKey : obj.iconKey}.svg" alt="Image" class="shortcut-icons-img" />
     </a>
   `).join('');
     if (!isMobile) {
