@@ -197,11 +197,6 @@ export default class PartnerCards extends LitElement {
         const [filtersPanelEl] = cols;
         const filtersPanel = filtersPanelEl.innerText.trim().toLowerCase().replace(/ /g, '-');
         this.blockData.filtersPanel = filtersPanel;
-      },
-      'layout-type': (cols) => {
-        const [layoutTypeEl] = cols;
-        const layoutType = layoutTypeEl.innerText.trim().toLowerCase().replace(/ /g, '-');
-        this.blockData.layoutType = layoutType;
       }
     };
 
@@ -925,7 +920,7 @@ export default class PartnerCards extends LitElement {
           }
           <div class="partner-cards-content">
             ${this.getPartnerCardsHeader()}
-            <div class="partner-cards-collection ${this.blockData.layoutType === '4-up' ? 'layout-4-up' : ''}">
+            <div class="partner-cards-collection ${this.blockData.filtersPanel === 'disable' ? 'layout-4-up' : ''}">
               ${this.hasResponseData
                 ? this.partnerCards
                 : html`

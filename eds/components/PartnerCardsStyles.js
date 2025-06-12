@@ -1157,7 +1157,12 @@ export const singlePartnerCardStyles = css`
   .single-partner-card--half-height .card-title {
     color: #fff;
     z-index: 1;
+  }
+
+  .single-partner-card--half-height .card-title-wrapper {
     padding: 8px 24px 32px;
+    color: #fff;
+    z-index: 1;
   }
 
   .single-partner-card .card-description {
