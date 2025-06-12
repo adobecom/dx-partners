@@ -38,8 +38,8 @@ export const [setLibs, getLibs] = (() => {
 })();
 
 export const prodHosts = [
-  'main--dx-partners--adobecom.aem.page',
-  'main--dx-partners--adobecom.aem.live',
+  'main--da-dx-partners--adobecom.aem.page',
+  'main--da-dx-partners--adobecom.aem.live',
   'partners.adobe.com',
 ];
 
