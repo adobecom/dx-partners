@@ -24,7 +24,6 @@ class SinglePartnerCard extends LitElement {
 
   checkBackgroundImage(element) {
     const url = 'https://stage--dx-partners--adobecom.aem.page' + this.imageUrl;
-    console.info('Checking background image for URL:', url);
     const img = new Image();
 
     const isProd = prodHosts.includes(window.location.host);
