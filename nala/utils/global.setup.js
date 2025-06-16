@@ -27,9 +27,10 @@ async function getGitHubPRBranchLiveUrl() {
   const prFromRepoName = process.env.prRepo;
   
   const prBranchLiveUrl = `https://${prBranch}--${prFromRepoName}--${prFromOrg}.aem.live`;
+  const existingPageLiveUrl = `${prBranchLiveUrl}/digitalexperience/`
 
   try {
-    if (await isBranchURLValid(prBranchLiveUrl, true)) {
+    if (await isBranchURLValid(existingPageLiveUrl, true)) {
       process.env.PR_BRANCH_LIVE_URL = prBranchLiveUrl;
     }
     console.info('PR Repository : ', repository);
@@ -56,10 +57,9 @@ async function getGitHubMiloLibsBranchLiveUrl() {
 
   prBranchLiveUrl = process.env.PR_BRANCH_MILOLIBS_LIVE_URL;
   miloLibs = process.env.MILO_LIBS;
-  const existingPageLiveUrl = `${prBranchLiveUrl}/digitalexperience/`
 
   try {
-    if (await isBranchURLValid(existingPageLiveUrl, true)) {
+    if (await isBranchURLValid(prBranchLiveUrl)) {
       process.env.PR_BRANCH_LIVE_URL = prBranchLiveUrl;     
     }
     console.info('PR Repository : ', repository);
