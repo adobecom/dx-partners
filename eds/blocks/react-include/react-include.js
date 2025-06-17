@@ -61,9 +61,6 @@ export default async function init(el) {
   document.head.appendChild(newRelicScript);
   document.head.appendChild(mainScript);
 
-
-
-  root.style.display = 'block';
   performance.mark('react-include:end');
   performance.measure('react-include block', 'react-include:start', 'react-include:end');
 }
