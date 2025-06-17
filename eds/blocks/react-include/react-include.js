@@ -63,7 +63,7 @@ export default async function init(el) {
 
 
 
-
+  root.style.display = 'block';
   performance.mark('react-include:end');
   performance.measure('react-include block', 'react-include:start', 'react-include:end');
 }
