@@ -4,9 +4,6 @@ function createScript(url, defer) {
   let script = document.createElement('script');
   script.src =url;
   script.defer = defer;
-  script.onload = function () {
-    console.log('hello script');
-  };
   return script;
 }
 
@@ -48,6 +45,7 @@ export default async function init(el) {
     return;
   }
 
+  //these paths are fixed for now, as all react apps need them. We're checking with Gnan if they need to be made configurable / authorable.
   const flexhost =  prodHosts.includes(window.location.host)? 'https://partner-directory-ui-flex.adobe.io' : 'https://partner-directory-ui-flex-stage.adobe.io'
   let configScript = createScript( flexhost+'/configuration.js');
   let newRelicScript = createScript( flexhost+'/newrelic.js');
